@@ -1,0 +1,95 @@
+======================================================================
+  BLAST RADIUS ANALYSIS REPORT
+======================================================================
+
+  Region:             eu-central-1
+  Entry Point:        i-012c330f70d08508a
+  Entry Point Name:   WordpressStack/MyInstance
+  Entry Point Type:   ec2
+
+  Total Resources:    42
+  Reachable:          26
+  Blast Radius:       63.4%  [CRITICAL]
+
+  [███████████████████████████████░░░░░░░░░░░░░░░░░░░] 63.4%
+
+----------------------------------------------------------------------
+  REACHABLE RESOURCES
+----------------------------------------------------------------------
+
+  DYNAMODB (2):
+    - sepTextResults
+    - test-restore
+
+  EXTERNAL (1):
+    - Internet
+
+  IAM_ROLE (1):
+    - Role: WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz
+
+  LAMBDA (5):
+    - WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER
+    - WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg
+    - WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo
+    - WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S
+    - aws-controltower-NotificationForwarder
+
+  RDS (2):
+    - wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup
+    - wordpressstack-wordpressrdsrestored-3f7usakfzvse
+
+  S3 (15):
+    - cdk-hnb659fds-assets-851725424182-eu-central-1
+    - do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b
+    - dyn-blog-access-log
+    - ssh-key-851725424182
+    - wordpress-media-851725424182
+    - wordpress-media-files-851725424182
+    - wordpress-media-files-851725424182-1763399666684
+    - wordpress-media-files-851725424182-1763456645202
+    - wordpress-media-files-851725424182-1763457445864
+    - wordpress-media-files-851725424182-1763457857807
+    - wordpress-media-files-851725424182-1763458206846
+    - wordpress-media-files-851725424182-1763458616205
+    - wordpress-media-files-851725424182-1763459791778
+    - wordpress-media-files-851725424182-1763741118244
+    - wordpress-media-files-851725424182-1763973552741
+
+----------------------------------------------------------------------
+  EDGE IMPACT ANALYSIS (controls that reduce blast radius)
+----------------------------------------------------------------------
+
+  HIGH IMPACT (removing reduces BR by >20%):
+    [metadata] WordpressStack/MyInstance (i-012c330f70d08508a) -> Role: WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz (iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz)
+           Label: IMDS credential theft (IMDSv1)
+           Impact: -56.1% (BR would be 7.3%)
+
+  LOW IMPACT (23 edges with <5% individual impact)
+
+----------------------------------------------------------------------
+  RESULTS TABLE
+----------------------------------------------------------------------
+    | Resource Type   | Reachable | Total | Exposure |
+    |----------------|-----------|-------|----------|
+    | S3 Buckets     | 15        | 15    | 100.0%  |
+    | Lambda         | 5         | 5     | 100.0%  |
+    | RDS            | 2         | 2     | 100.0%  |
+    | DynamoDB       | 2         | 2     | 100.0%  |
+    | IAM Roles      | 1         | 6     |  16.7%  |
+    | Internet       | 1         | 1     | 100.0%  |
+    | EC2 Instances  | 0         | 1     |   0.0%  |
+    | VPC Endpoints  | 0         | 3     |   0.0%  |
+    | NAT Gateways   | 0         | 1     |   0.0%  |
+    | Internet GWs   | 0         | 1     |   0.0%  |
+    | Route Tables   | 0         | 5     |   0.0%  |
+    |----------------|-----------|-------|----------|
+    | TOTAL          | 26        | 42    |  61.9%  |
+
+----------------------------------------------------------------------
+  RECOMMENDED CONTROLS
+----------------------------------------------------------------------
+  1. Enforce IMDSv2 (HttpTokens=required) on all EC2 instances to prevent SSRF-based credential theft.
+  2. Restrict outbound internet access - use VPC endpoints for AWS services, remove NAT/IGW where not required.
+  3. CRITICAL: Blast radius exceeds 50%. Consider network segmentation or separate VPCs.
+
+======================================================================

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blast-radius-scanner"
+version = "0.1.0"
+description = "Automated blast radius measurement in AWS using attack graph analysis"
+requires-python = ">=3.11"
+authors = [
+    { name = "Soumik Shadman" }
+]
+dependencies = [
+    "boto3>=1.28.0",
+    "networkx>=3.1",
+    "click>=8.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "moto>=4.2.0",
+    "pytest-cov>=4.1.0",
+]
+
+[project.scripts]
+blast-radius-scanner = "blast_radius_scanner.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

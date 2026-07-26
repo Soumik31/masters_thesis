@@ -1,0 +1,367 @@
+{
+  "region": "eu-central-1",
+  "entry_point": "i-012c330f70d08508a",
+  "total_nodes": 42,
+  "reachable_nodes": 26,
+  "blast_radius_percent": 63.41,
+  "category": "critical",
+  "reachable_resources": [
+    {
+      "id": "Internet",
+      "type": "external",
+      "label": "Internet"
+    },
+    {
+      "id": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER",
+      "type": "lambda",
+      "label": "WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER"
+    },
+    {
+      "id": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg",
+      "type": "lambda",
+      "label": "WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg"
+    },
+    {
+      "id": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo",
+      "type": "lambda",
+      "label": "WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo"
+    },
+    {
+      "id": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S",
+      "type": "lambda",
+      "label": "WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S"
+    },
+    {
+      "id": "arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder",
+      "type": "lambda",
+      "label": "aws-controltower-NotificationForwarder"
+    },
+    {
+      "id": "dynamodb:sepTextResults",
+      "type": "dynamodb",
+      "label": "sepTextResults"
+    },
+    {
+      "id": "dynamodb:test-restore",
+      "type": "dynamodb",
+      "label": "test-restore"
+    },
+    {
+      "id": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "type": "iam_role",
+      "label": "Role: WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz"
+    },
+    {
+      "id": "s3:cdk-hnb659fds-assets-851725424182-eu-central-1",
+      "type": "s3",
+      "label": "cdk-hnb659fds-assets-851725424182-eu-central-1"
+    },
+    {
+      "id": "s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b",
+      "type": "s3",
+      "label": "do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b"
+    },
+    {
+      "id": "s3:dyn-blog-access-log",
+      "type": "s3",
+      "label": "dyn-blog-access-log"
+    },
+    {
+      "id": "s3:ssh-key-851725424182",
+      "type": "s3",
+      "label": "ssh-key-851725424182"
+    },
+    {
+      "id": "s3:wordpress-media-851725424182",
+      "type": "s3",
+      "label": "wordpress-media-851725424182"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763399666684",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763399666684"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763456645202",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763456645202"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763457445864",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763457445864"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763457857807",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763457857807"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763458206846",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763458206846"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763458616205",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763458616205"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763459791778",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763459791778"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763741118244",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763741118244"
+    },
+    {
+      "id": "s3:wordpress-media-files-851725424182-1763973552741",
+      "type": "s3",
+      "label": "wordpress-media-files-851725424182-1763973552741"
+    },
+    {
+      "id": "wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup",
+      "type": "rds",
+      "label": "wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup"
+    },
+    {
+      "id": "wordpressstack-wordpressrdsrestored-3f7usakfzvse",
+      "type": "rds",
+      "label": "wordpressstack-wordpressrdsrestored-3f7usakfzvse"
+    }
+  ],
+  "edge_impacts": [
+    {
+      "source": "i-012c330f70d08508a",
+      "target": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "edge_type": "metadata",
+      "label": "IMDS credential theft (IMDSv1)",
+      "impact_delta": 56.1,
+      "blast_radius_without": 7.32,
+      "category": "high"
+    },
+    {
+      "source": "i-012c330f70d08508a",
+      "target": "Internet",
+      "edge_type": "route",
+      "label": "via nat:nat-01ce085f0b97fe4cd",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:cdk-hnb659fds-assets-851725424182-eu-central-1",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:dyn-blog-access-log",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:ssh-key-851725424182",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-851725424182",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763399666684",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763456645202",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763457445864",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763457857807",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763458206846",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763458616205",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763459791778",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763741118244",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "s3:wordpress-media-files-851725424182-1763973552741",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "dynamodb:sepTextResults",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "dynamodb:test-restore",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    },
+    {
+      "source": "iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz",
+      "target": "arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER",
+      "edge_type": "iam",
+      "label": "ssm:DescribePatchBaselines (wildcard)",
+      "impact_delta": 2.44,
+      "blast_radius_without": 60.98,
+      "category": "low"
+    }
+  ],
+  "recommendations": [
+    "Enforce IMDSv2 (HttpTokens=required) on all EC2 instances to prevent SSRF-based credential theft.",
+    "Restrict outbound internet access - use VPC endpoints for AWS services, remove NAT/IGW where not required.",
+    "CRITICAL: Blast radius exceeds 50%. Consider network segmentation or separate VPCs."
+  ],
+  "graph_summary": {
+    "total_edges": 154,
+    "total_nodes": 42
+  }
+}

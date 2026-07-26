@@ -1,0 +1,1828 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-06-30">
+    <creator>NetworkX 3.2.1</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="edge">
+      <attribute id="5" title="edge_type" type="string" />
+      <attribute id="6" title="port" type="string" />
+      <attribute id="7" title="protocol" type="string" />
+      <attribute id="8" title="gateway" type="string" />
+      <attribute id="9" title="imds_version" type="string" />
+      <attribute id="10" title="http_tokens" type="string" />
+      <attribute id="11" title="hop_limit" type="string" />
+      <attribute id="12" title="role_name" type="string" />
+      <attribute id="13" title="role" type="string" />
+      <attribute id="14" title="action" type="string" />
+      <attribute id="15" title="resource" type="string" />
+    </attributes>
+    <attributes mode="static" class="node">
+      <attribute id="0" title="resource_type" type="string" />
+      <attribute id="1" title="resource_id" type="string" />
+      <attribute id="2" title="vpc_id" type="string" />
+      <attribute id="3" title="state" type="string" />
+      <attribute id="4" title="engine" type="string" />
+    </attributes>
+    <nodes>
+      <node id="i-05979b954e36893fb" label="WordpressStack/MyInstance">
+        <attvalues>
+          <attvalue for="0" value="ec2" />
+          <attvalue for="1" value="i-05979b954e36893fb" />
+          <attvalue for="2" value="vpc-0f0232bb3b7453175" />
+          <attvalue for="3" value="running" />
+        </attvalues>
+      </node>
+      <node id="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" label="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup">
+        <attvalues>
+          <attvalue for="0" value="rds" />
+          <attvalue for="1" value="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" />
+          <attvalue for="4" value="mysql" />
+          <attvalue for="2" value="vpc-0f0232bb3b7453175" />
+        </attvalues>
+      </node>
+      <node id="wordpressstack-wordpressrdsrestored-3f7usakfzvse" label="wordpressstack-wordpressrdsrestored-3f7usakfzvse">
+        <attvalues>
+          <attvalue for="0" value="rds" />
+          <attvalue for="1" value="wordpressstack-wordpressrdsrestored-3f7usakfzvse" />
+          <attvalue for="4" value="mysql" />
+          <attvalue for="2" value="vpc-0f0232bb3b7453175" />
+        </attvalues>
+      </node>
+      <node id="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" label="cdk-hnb659fds-assets-851725424182-eu-central-1">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="cdk-hnb659fds-assets-851725424182-eu-central-1" />
+        </attvalues>
+      </node>
+      <node id="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" label="do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" />
+        </attvalues>
+      </node>
+      <node id="s3:dyn-blog-access-log" label="dyn-blog-access-log">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="dyn-blog-access-log" />
+        </attvalues>
+      </node>
+      <node id="s3:ssh-key-851725424182" label="ssh-key-851725424182">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="ssh-key-851725424182" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-851725424182" label="wordpress-media-851725424182">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-851725424182" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182" label="wordpress-media-files-851725424182">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763399666684" label="wordpress-media-files-851725424182-1763399666684">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763399666684" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763456645202" label="wordpress-media-files-851725424182-1763456645202">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763456645202" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763457445864" label="wordpress-media-files-851725424182-1763457445864">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763457445864" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763457857807" label="wordpress-media-files-851725424182-1763457857807">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763457857807" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763458206846" label="wordpress-media-files-851725424182-1763458206846">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763458206846" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763458616205" label="wordpress-media-files-851725424182-1763458616205">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763458616205" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763459791778" label="wordpress-media-files-851725424182-1763459791778">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763459791778" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763741118244" label="wordpress-media-files-851725424182-1763741118244">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763741118244" />
+        </attvalues>
+      </node>
+      <node id="s3:wordpress-media-files-851725424182-1763973552741" label="wordpress-media-files-851725424182-1763973552741">
+        <attvalues>
+          <attvalue for="0" value="s3" />
+          <attvalue for="1" value="wordpress-media-files-851725424182-1763973552741" />
+        </attvalues>
+      </node>
+      <node id="dynamodb:sepTextResults" label="sepTextResults">
+        <attvalues>
+          <attvalue for="0" value="dynamodb" />
+          <attvalue for="1" value="sepTextResults" />
+        </attvalues>
+      </node>
+      <node id="dynamodb:test-restore" label="test-restore">
+        <attvalues>
+          <attvalue for="0" value="dynamodb" />
+          <attvalue for="1" value="test-restore" />
+        </attvalues>
+      </node>
+      <node id="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" label="aws-controltower-NotificationForwarder">
+        <attvalues>
+          <attvalue for="0" value="lambda" />
+          <attvalue for="1" value="aws-controltower-NotificationForwarder" />
+          <attvalue for="2" value="" />
+        </attvalues>
+      </node>
+      <node id="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" label="WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg">
+        <attvalues>
+          <attvalue for="0" value="lambda" />
+          <attvalue for="1" value="WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" />
+          <attvalue for="2" value="" />
+        </attvalues>
+      </node>
+      <node id="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" label="WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S">
+        <attvalues>
+          <attvalue for="0" value="lambda" />
+          <attvalue for="1" value="WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" />
+          <attvalue for="2" value="" />
+        </attvalues>
+      </node>
+      <node id="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" label="WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo">
+        <attvalues>
+          <attvalue for="0" value="lambda" />
+          <attvalue for="1" value="WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" />
+          <attvalue for="2" value="" />
+        </attvalues>
+      </node>
+      <node id="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" label="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER">
+        <attvalues>
+          <attvalue for="0" value="lambda" />
+          <attvalue for="1" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" />
+          <attvalue for="2" value="" />
+        </attvalues>
+      </node>
+      <node id="vpce-04cace983a4ef2e42" label="Interface:com.amazonaws.eu-central-1.ssm">
+        <attvalues>
+          <attvalue for="0" value="vpc_endpoint" />
+          <attvalue for="1" value="vpce-04cace983a4ef2e42" />
+        </attvalues>
+      </node>
+      <node id="vpce-026fa51a27911c969" label="Interface:com.amazonaws.eu-central-1.ssmmessages">
+        <attvalues>
+          <attvalue for="0" value="vpc_endpoint" />
+          <attvalue for="1" value="vpce-026fa51a27911c969" />
+        </attvalues>
+      </node>
+      <node id="vpce-0cb80532af179bd38" label="Interface:com.amazonaws.eu-central-1.ec2messages">
+        <attvalues>
+          <attvalue for="0" value="vpc_endpoint" />
+          <attvalue for="1" value="vpce-0cb80532af179bd38" />
+        </attvalues>
+      </node>
+      <node id="nat-01ce085f0b97fe4cd" label="nat-01ce085f0b97fe4cd">
+        <attvalues>
+          <attvalue for="0" value="nat_gateway" />
+          <attvalue for="1" value="nat-01ce085f0b97fe4cd" />
+        </attvalues>
+      </node>
+      <node id="igw-04d18b15b022ffdb5" label="igw-04d18b15b022ffdb5">
+        <attvalues>
+          <attvalue for="0" value="internet_gateway" />
+          <attvalue for="1" value="igw-04d18b15b022ffdb5" />
+        </attvalues>
+      </node>
+      <node id="rtb-0428456e435d5dad8" label="rtb-0428456e435d5dad8">
+        <attvalues>
+          <attvalue for="0" value="route_table" />
+          <attvalue for="1" value="rtb-0428456e435d5dad8" />
+        </attvalues>
+      </node>
+      <node id="rtb-011c5bd661921509a" label="rtb-011c5bd661921509a">
+        <attvalues>
+          <attvalue for="0" value="route_table" />
+          <attvalue for="1" value="rtb-011c5bd661921509a" />
+        </attvalues>
+      </node>
+      <node id="rtb-06fdefa1ae3e45708" label="rtb-06fdefa1ae3e45708">
+        <attvalues>
+          <attvalue for="0" value="route_table" />
+          <attvalue for="1" value="rtb-06fdefa1ae3e45708" />
+        </attvalues>
+      </node>
+      <node id="rtb-0821910dff27df656" label="rtb-0821910dff27df656">
+        <attvalues>
+          <attvalue for="0" value="route_table" />
+          <attvalue for="1" value="rtb-0821910dff27df656" />
+        </attvalues>
+      </node>
+      <node id="rtb-00886dd8e9f6b9d72" label="rtb-00886dd8e9f6b9d72">
+        <attvalues>
+          <attvalue for="0" value="route_table" />
+          <attvalue for="1" value="rtb-00886dd8e9f6b9d72" />
+        </attvalues>
+      </node>
+      <node id="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" label="Role: WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+        </attvalues>
+      </node>
+      <node id="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" label="Role: WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+        </attvalues>
+      </node>
+      <node id="iam_role:aws-controltower-ForwardSnsNotificationRole" label="Role: aws-controltower-ForwardSnsNotificationRole">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="aws-controltower-ForwardSnsNotificationRole" />
+        </attvalues>
+      </node>
+      <node id="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" label="Role: WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+        </attvalues>
+      </node>
+      <node id="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" label="Role: WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+        </attvalues>
+      </node>
+      <node id="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" label="Role: WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ">
+        <attvalues>
+          <attvalue for="0" value="iam_role" />
+          <attvalue for="1" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+        </attvalues>
+      </node>
+      <node id="Internet" label="Internet">
+        <attvalues>
+          <attvalue for="0" value="external" />
+          <attvalue for="1" value="Internet" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges>
+      <edge source="i-05979b954e36893fb" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="0" label="tcp/3306">
+        <attvalues>
+          <attvalue for="5" value="network" />
+          <attvalue for="6" value="3306" />
+          <attvalue for="7" value="tcp" />
+        </attvalues>
+      </edge>
+      <edge source="i-05979b954e36893fb" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="1" label="tcp/3306">
+        <attvalues>
+          <attvalue for="5" value="network" />
+          <attvalue for="6" value="3306" />
+          <attvalue for="7" value="tcp" />
+        </attvalues>
+      </edge>
+      <edge source="i-05979b954e36893fb" target="Internet" id="2" label="via nat:nat-01ce085f0b97fe4cd">
+        <attvalues>
+          <attvalue for="5" value="route" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="8" value="nat:nat-01ce085f0b97fe4cd" />
+        </attvalues>
+      </edge>
+      <edge source="i-05979b954e36893fb" target="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" id="3" label="IMDS credential theft (IMDSv1)">
+        <attvalues>
+          <attvalue for="5" value="metadata" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="9" value="v1" />
+          <attvalue for="10" value="optional" />
+          <attvalue for="11" value="1" />
+          <attvalue for="12" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="4" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="5" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="6" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:dyn-blog-access-log" id="7" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:ssh-key-851725424182" id="8" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-851725424182" id="9" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182" id="10" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763399666684" id="11" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763456645202" id="12" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763457445864" id="13" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763457857807" id="14" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763458206846" id="15" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763458616205" id="16" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763459791778" id="17" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763741118244" id="18" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="s3:wordpress-media-files-851725424182-1763973552741" id="19" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="dynamodb:sepTextResults" id="20" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="dynamodb:test-restore" id="21" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="22" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="23" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="24" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="25" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="26" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="27" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" target="i-05979b954e36893fb" id="28" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AWS679f53fac002430cb0da5b7982bd2287S-ZsPkYLlK1Cq0" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="29" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="30" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:dyn-blog-access-log" id="31" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:ssh-key-851725424182" id="32" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-851725424182" id="33" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182" id="34" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763399666684" id="35" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763456645202" id="36" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763457445864" id="37" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763457857807" id="38" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763458206846" id="39" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763458616205" id="40" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763459791778" id="41" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763741118244" id="42" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="s3:wordpress-media-files-851725424182-1763973552741" id="43" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="dynamodb:sepTextResults" id="44" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="dynamodb:test-restore" id="45" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="46" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="47" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="48" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="49" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="50" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="51" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="52" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" target="i-05979b954e36893fb" id="53" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-SesSmtpConvertCredentialsFunctionSer-OxcKnlMjOYo5" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="54" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="55" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:dyn-blog-access-log" id="56" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:ssh-key-851725424182" id="57" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-851725424182" id="58" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182" id="59" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763399666684" id="60" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763456645202" id="61" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763457445864" id="62" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763457857807" id="63" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763458206846" id="64" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763458616205" id="65" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763459791778" id="66" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763741118244" id="67" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="s3:wordpress-media-files-851725424182-1763973552741" id="68" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="dynamodb:sepTextResults" id="69" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="dynamodb:test-restore" id="70" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="71" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="72" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="73" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="74" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="75" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="76" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="77" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:aws-controltower-ForwardSnsNotificationRole" target="i-05979b954e36893fb" id="78" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="aws-controltower-ForwardSnsNotificationRole" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="79" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="80" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:dyn-blog-access-log" id="81" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:ssh-key-851725424182" id="82" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-851725424182" id="83" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182" id="84" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763399666684" id="85" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763456645202" id="86" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763457445864" id="87" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763457857807" id="88" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763458206846" id="89" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763458616205" id="90" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763459791778" id="91" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763741118244" id="92" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="s3:wordpress-media-files-851725424182-1763973552741" id="93" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="dynamodb:sepTextResults" id="94" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="dynamodb:test-restore" id="95" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="96" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="97" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="98" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="99" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="100" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="101" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="102" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" target="i-05979b954e36893fb" id="103" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-AuditLogForwarderServiceRoleE9A04C1D-u9pX47mBcarW" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="104" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="105" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:dyn-blog-access-log" id="106" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:ssh-key-851725424182" id="107" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-851725424182" id="108" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182" id="109" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763399666684" id="110" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763456645202" id="111" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763457445864" id="112" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763457857807" id="113" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763458206846" id="114" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763458616205" id="115" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763459791778" id="116" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763741118244" id="117" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="s3:wordpress-media-files-851725424182-1763973552741" id="118" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="dynamodb:sepTextResults" id="119" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="dynamodb:test-restore" id="120" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="121" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="122" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="123" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="124" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="125" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="126" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="127" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" target="i-05979b954e36893fb" id="128" label="ssm:DescribePatchBaselines (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-MyInstanceRoleBF418E71-zGqTXv1yc3fz" />
+          <attvalue for="14" value="ssm:DescribePatchBaselines" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:cdk-hnb659fds-assets-851725424182-eu-central-1" id="129" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:do-not-delete-ssm-diagnosis-851725424182-eu-central-1-50f2b" id="130" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:dyn-blog-access-log" id="131" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:ssh-key-851725424182" id="132" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-851725424182" id="133" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182" id="134" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763399666684" id="135" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763456645202" id="136" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763457445864" id="137" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763457857807" id="138" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763458206846" id="139" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763458616205" id="140" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763459791778" id="141" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763741118244" id="142" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="s3:wordpress-media-files-851725424182-1763973552741" id="143" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="dynamodb:sepTextResults" id="144" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="dynamodb:test-restore" id="145" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="arn:aws:lambda:eu-central-1:851725424182:function:aws-controltower-NotificationForwarder" id="146" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AuditLogForwarderCA560683-R1fVfQInNDQg" id="147" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-SesSmtpConvertCredentialsFunction97-TU7hD06gkR9S" id="148" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-CustomVpcRestrictDefaultSGCustomRes-20y61qYE4rHo" id="149" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="arn:aws:lambda:eu-central-1:851725424182:function:WordpressStack-AWS679f53fac002430cb0da5b7982bd2287-ZUG4a5GuJ9ER" id="150" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="wordpressstack-wordpressrds48912f6d-tibzovif7obk-dev-backup" id="151" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="wordpressstack-wordpressrdsrestored-3f7usakfzvse" id="152" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+      <edge source="iam_role:WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" target="i-05979b954e36893fb" id="153" label="logs:PutLogEvents (wildcard)">
+        <attvalues>
+          <attvalue for="5" value="iam" />
+          <attvalue for="6" value="" />
+          <attvalue for="7" value="" />
+          <attvalue for="13" value="WordpressStack-CustomVpcRestrictDefaultSGCustomReso-db4o0p6ypUgJ" />
+          <attvalue for="14" value="logs:PutLogEvents" />
+          <attvalue for="15" value="*" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
