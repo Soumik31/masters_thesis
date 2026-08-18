@@ -7,6 +7,7 @@ import logging
 from typing import Any
 
 import boto3
+from botocore.exceptions import ClientError
 
 from blast_radius_scanner.models import S3Bucket
 
@@ -80,13 +81,16 @@ def _get_public_access_block(s3_client: Any, bucket_name: str) -> dict[str, bool
             "BlockPublicPolicy": config.get("BlockPublicPolicy", False),
             "RestrictPublicBuckets": config.get("RestrictPublicBuckets", False),
         }
-    except s3_client.exceptions.NoSuchPublicAccessBlockConfiguration:
-        return {
-            "BlockPublicAcls": False,
-            "IgnorePublicAcls": False,
-            "BlockPublicPolicy": False,
-            "RestrictPublicBuckets": False,
-        }
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "NoSuchPublicAccessBlockConfiguration":
+            return {
+                "BlockPublicAcls": False,
+                "IgnorePublicAcls": False,
+                "BlockPublicPolicy": False,
+                "RestrictPublicBuckets": False,
+            }
+        logger.debug("Could not get public access block for %s: %s", bucket_name, e)
+        return {}
     except Exception as e:
         logger.debug("Could not get public access block for %s: %s", bucket_name, e)
         return {}
