@@ -56,6 +56,22 @@ def main(
         session_kwargs["profile_name"] = profile
     session = boto3.Session(**session_kwargs)
 
+    # Get account identity
+    sts = session.client("sts")
+    identity = sts.get_caller_identity()
+    account_id = identity["Account"]
+
+    # Try to get account alias (friendly name)
+    try:
+        iam = session.client("iam")
+        aliases = iam.list_account_aliases().get("AccountAliases", [])
+        account_name = aliases[0] if aliases else account_id
+    except Exception:
+        account_name = account_id
+
+    click.echo(f"  Account:  {account_name} ({account_id})", err=True)
+    click.echo("", err=True)
+
     # Phase 1: Discovery
     click.echo("Phase 1/4: Discovering resources...", err=True)
     discovery_result = discover_all(session, region)
@@ -63,7 +79,7 @@ def main(
 
     # --- ALL ENTRY POINTS MODE ---
     if all_entry_points:
-        _run_all_entry_points(session, discovery_result, region, output_format)
+        _run_all_entry_points(session, discovery_result, region, output_format, account_name, account_id)
         return
 
     # --- AUTO ENTRY POINT MODE ---
@@ -90,7 +106,7 @@ def main(
         click.echo("", err=True)
 
     # --- SINGLE ENTRY POINT SCAN ---
-    _run_single_entry_point(session, discovery_result, entry_point, region, output_format)
+    _run_single_entry_point(session, discovery_result, entry_point, region, output_format, account_name, account_id)
 
 
 def _run_single_entry_point(
@@ -99,6 +115,8 @@ def _run_single_entry_point(
     entry_point: str,
     region: str,
     output_format: str,
+    account_name: str = "",
+    account_id: str = "",
 ) -> None:
     """Run the full scan for a single entry point with all outputs saved to timestamped folder."""
     import os
@@ -126,7 +144,7 @@ def _run_single_entry_point(
     click.echo("", err=True)
 
     # Output report to terminal
-    text_report = format_text_report(scoring, graph, region)
+    text_report = format_text_report(scoring, graph, region, account_name=account_name, account_id=account_id)
     click.echo(text_report)
 
     # Save all outputs to results folder
@@ -135,7 +153,7 @@ def _run_single_entry_point(
         f.write(text_report)
 
     # 2. JSON report
-    json_report = format_json_report(scoring, graph, region)
+    json_report = format_json_report(scoring, graph, region, account_name=account_name, account_id=account_id)
     with open(os.path.join(results_dir, "results.json"), "w") as f:
         f.write(json_report)
 
@@ -159,6 +177,8 @@ def _run_all_entry_points(
     discovery_result,
     region: str,
     output_format: str,
+    account_name: str = "",
+    account_id: str = "",
 ) -> None:
     """Run blast radius analysis for every compute resource and compare."""
     # Collect all entry point IDs

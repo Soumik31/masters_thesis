@@ -18,6 +18,8 @@ def format_text_report(
     graph: nx.DiGraph,
     region: str,
     discovery=None,
+    account_name: str = "",
+    account_id: str = "",
 ) -> str:
     """Format the scoring result as a human-readable terminal report."""
     lines: list[str] = []
@@ -26,6 +28,9 @@ def format_text_report(
     lines.append("  BLAST RADIUS ANALYSIS REPORT")
     lines.append("=" * 70)
     lines.append("")
+    if account_name or account_id:
+        display = f"{account_name} ({account_id})" if account_name != account_id else account_id
+        lines.append(f"  Account:            {display}")
     lines.append(f"  Region:             {region}")
     lines.append(f"  Entry Point:        {scoring.entry_point}")
     _append_entry_point_details(lines, scoring.entry_point, graph)
@@ -109,9 +114,13 @@ def format_json_report(
     scoring: ScoringResult,
     graph: nx.DiGraph,
     region: str,
+    account_name: str = "",
+    account_id: str = "",
 ) -> str:
     """Format the scoring result as JSON for programmatic consumption."""
     result: dict[str, Any] = {
+        "account_name": account_name,
+        "account_id": account_id,
         "region": region,
         "entry_point": scoring.entry_point,
         "total_nodes": scoring.total_nodes,
