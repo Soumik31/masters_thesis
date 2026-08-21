@@ -88,6 +88,22 @@ def score_blast_radius(
     )
 
 
+def score_control_effectiveness(
+    graph_before: nx.DiGraph,
+    graph_after: nx.DiGraph,
+    entry_point: str,
+) -> float:
+    """Control effectiveness CE(c) = BR_before(v) - BR_after(v), in percentage points.
+
+    `graph_after` is the counterfactual graph with the edges that control `c` severs
+    removed. A positive value means the control reduces blast radius; 0.0 means the
+    control has no effect under the threat model the graphs were built for.
+    """
+    before = score_blast_radius(graph_before, entry_point).blast_radius_percent
+    after = score_blast_radius(graph_after, entry_point).blast_radius_percent
+    return round(before - after, 2)
+
+
 def _resolve_entry_point(graph: nx.DiGraph, entry_point: str) -> str:
     """Try to resolve an entry point string to a node in the graph."""
     if entry_point in graph:

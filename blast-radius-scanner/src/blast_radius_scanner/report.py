@@ -12,6 +12,12 @@ from blast_radius_scanner.scorer import EdgeImpact, ScoringResult
 
 logger = logging.getLogger(__name__)
 
+# Ordered rows for the threat model comparison table.
+_THREAT_MODEL_ROWS = (
+    ("code_exec", "TM1 code execution"),
+    ("ssrf", "TM2 SSRF only"),
+)
+
 
 def format_text_report(
     scoring: ScoringResult,
@@ -20,6 +26,9 @@ def format_text_report(
     discovery=None,
     account_name: str = "",
     account_id: str = "",
+    threat_model: str = "",
+    threat_model_scorings: dict[str, ScoringResult] | None = None,
+    control_effectiveness: dict[str, float] | None = None,
 ) -> str:
     """Format the scoring result as a human-readable terminal report."""
     lines: list[str] = []
@@ -32,6 +41,8 @@ def format_text_report(
         display = f"{account_name} ({account_id})" if account_name != account_id else account_id
         lines.append(f"  Account:            {display}")
     lines.append(f"  Region:             {region}")
+    if threat_model:
+        lines.append(f"  Threat Model:       {threat_model}")
     lines.append(f"  Entry Point:        {scoring.entry_point}")
     _append_entry_point_details(lines, scoring.entry_point, graph)
     lines.append("")
@@ -45,6 +56,30 @@ def format_text_report(
     bar = "\u2588" * filled + "\u2591" * (bar_width - filled)
     lines.append(f"  [{bar}] {scoring.blast_radius_percent:.1f}%")
     lines.append("")
+
+    # Threat model comparison + control effectiveness
+    if threat_model_scorings:
+        lines.append("-" * 70)
+        lines.append("  THREAT MODEL COMPARISON")
+        lines.append("-" * 70)
+        lines.append("    | Threat Model                    | Reachable | Total | BR%    |")
+        lines.append("    |---------------------------------|-----------|-------|--------|")
+        for tm_key, tm_label in _THREAT_MODEL_ROWS:
+            tm_scoring = threat_model_scorings.get(tm_key)
+            if tm_scoring is None:
+                continue
+            denominator = max(tm_scoring.total_nodes - 1, 0)
+            lines.append(
+                f"    | {tm_label:<31} | {tm_scoring.reachable_nodes:<9} "
+                f"| {denominator:<5} | {tm_scoring.blast_radius_percent:>5.1f}% |"
+            )
+        lines.append("")
+
+    if control_effectiveness:
+        lines.append("  CONTROL EFFECTIVENESS  CE(c) = BR_before - BR_after")
+        for control, delta in control_effectiveness.items():
+            lines.append(f"    {control:<45} {delta:>7.2f} pp")
+        lines.append("")
 
     # Reachable resources grouped by type
     lines.append("-" * 70)
@@ -116,12 +151,26 @@ def format_json_report(
     region: str,
     account_name: str = "",
     account_id: str = "",
+    threat_model: str = "",
+    threat_model_scorings: dict[str, ScoringResult] | None = None,
+    control_effectiveness: dict[str, float] | None = None,
 ) -> str:
     """Format the scoring result as JSON for programmatic consumption."""
     result: dict[str, Any] = {
         "account_name": account_name,
         "account_id": account_id,
         "region": region,
+        "threat_model": threat_model,
+        "threat_model_results": {
+            tm: {
+                "reachable_nodes": s.reachable_nodes,
+                "total_nodes": s.total_nodes,
+                "blast_radius_percent": s.blast_radius_percent,
+                "category": s.category,
+            }
+            for tm, s in (threat_model_scorings or {}).items()
+        },
+        "control_effectiveness": control_effectiveness or {},
         "entry_point": scoring.entry_point,
         "total_nodes": scoring.total_nodes,
         "reachable_nodes": scoring.reachable_nodes,
@@ -198,6 +247,13 @@ def _generate_recommendations(scoring: ScoringResult, graph: nx.DiGraph) -> list
     if has_imds:
         recommendations.append(
             "Enforce IMDSv2 (HttpTokens=required) on all EC2 instances to prevent SSRF-based credential theft."
+        )
+
+    has_identity = any(ei.edge_type == "identity" for ei in scoring.edge_impacts)
+    if has_identity:
+        recommendations.append(
+            "Execution-role credentials are obtainable whenever code runs on the resource; "
+            "IMDSv2 does not sever this path. Reduce the role's permissions instead (least privilege)."
         )
 
     iam_high = [ei for ei in scoring.edge_impacts if ei.edge_type == "iam" and ei.category in ("high", "medium")]
