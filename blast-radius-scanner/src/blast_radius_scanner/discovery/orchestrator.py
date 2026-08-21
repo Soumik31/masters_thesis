@@ -10,6 +10,7 @@ from blast_radius_scanner.models import DiscoveryResult
 
 from blast_radius_scanner.discovery.dynamodb import discover_dynamodb_tables
 from blast_radius_scanner.discovery.ec2 import discover_ec2_instances, discover_security_groups
+from blast_radius_scanner.discovery.exposure import discover_lambda_exposures
 from blast_radius_scanner.discovery.iam_roles import discover_iam_roles
 from blast_radius_scanner.discovery.lambda_fn import discover_lambda_functions
 from blast_radius_scanner.discovery.rds import discover_rds_instances
@@ -46,6 +47,14 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
     s3_buckets = discover_s3_buckets(session, region)
     dynamodb_tables = discover_dynamodb_tables(session)
     lambda_functions = discover_lambda_functions(session, security_groups)
+    # Annotate functions with how they can be reached, so entry point selection can be
+    # restricted to resources an attacker could actually start from.
+    if lambda_functions:
+        exposures = discover_lambda_exposures(
+            session, [fn.function_arn for fn in lambda_functions]
+        )
+        for fn in lambda_functions:
+            fn.exposures = exposures.get(fn.function_arn, [])
     vpc_endpoints = discover_vpc_endpoints(session)
     nat_gateways = discover_nat_gateways(session)
     internet_gateways = discover_internet_gateways(session)

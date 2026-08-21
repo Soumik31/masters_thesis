@@ -6,6 +6,14 @@ import logging
 import math
 from dataclasses import dataclass, field
 
+from blast_radius_scanner.discovery.exposure import (
+    EXPOSURE_API_GATEWAY,
+    EXPOSURE_EVENT_SOURCE,
+    EXPOSURE_LOAD_BALANCER,
+    EXPOSURE_PUBLIC_FUNCTION_URL,
+    EXPOSURE_WILDCARD_PRINCIPAL,
+    UNAUTHENTICATED_EXPOSURES,
+)
 from blast_radius_scanner.models import (
     DiscoveryResult,
     EC2Instance,
@@ -26,12 +34,25 @@ class EntryPointCandidate:
     name: str
     score: int  # 0-100
     reasons: list[str] = field(default_factory=list)
+    exposures: list[str] = field(default_factory=list)
+
+    @property
+    def is_externally_reachable(self) -> bool:
+        """Whether an untrusted caller can reach this resource without credentials.
+
+        For EC2 this means a public IP. For Lambda it means a public Function URL or a
+        resource policy allowing any principal. API Gateway and event sources are recorded
+        as exposures but not counted here, because the API may require authentication and
+        writing to an event source may itself need access.
+        """
+        return bool(UNAUTHENTICATED_EXPOSURES.intersection(self.exposures))
 
 
 def select_entry_point(
     discovery: DiscoveryResult,
     edges: list | None = None,
     include_stopped: bool = False,
+    exposed_only: bool = False,
 ) -> list[EntryPointCandidate]:
     """Analyze all compute resources and rank them by exposure score.
 
@@ -52,6 +73,11 @@ def select_entry_point(
         discovery: Discovery result.
         edges: Optional reachability edges, used to measure role breadth.
         include_stopped: Include EC2 instances that are not running.
+        exposed_only: Return only candidates an untrusted caller can reach without
+            credentials. This is the set that answers "if an attacker reaches one of my
+            services, how far can they spread"; without it, internal-only resources are
+            treated as equally plausible starting points even though reaching them would
+            already require compromising the account.
 
     Returns candidates sorted by score descending.
     """
@@ -75,6 +101,9 @@ def select_entry_point(
     for fn in discovery.lambda_functions:
         candidate = _score_lambda_function(fn, role_breadth)
         candidates.append(candidate)
+
+    if exposed_only:
+        candidates = [c for c in candidates if c.is_externally_reachable]
 
     # Sort by score descending
     candidates.sort(key=lambda c: c.score, reverse=True)
@@ -171,12 +200,18 @@ def _score_ec2_instance(
     # Cap at 100
     score = min(score, 100)
 
+    # An EC2 instance is reachable by an untrusted caller when it has a public IP. This is
+    # recorded using the same wildcard-principal marker as Lambda so that
+    # is_externally_reachable has one meaning across resource types.
+    exposures = [EXPOSURE_WILDCARD_PRINCIPAL] if inst.public_ip else []
+
     return EntryPointCandidate(
         resource_id=inst.instance_id,
         resource_type="ec2",
         name=inst.name or inst.instance_id,
         score=score,
         reasons=reasons,
+        exposures=exposures,
     )
 
 
@@ -207,6 +242,26 @@ def _score_lambda_function(
             score += 10
             reasons.append("broad SG egress (0.0.0.0/0)")
 
+    # Reachability by an untrusted caller — the precondition for this being a real entry point
+    for exposure in fn.exposures:
+        if exposure == EXPOSURE_PUBLIC_FUNCTION_URL:
+            score += 25
+            reasons.append("public Function URL (AuthType NONE)")
+        elif exposure == EXPOSURE_WILDCARD_PRINCIPAL:
+            score += 25
+            reasons.append("resource policy allows any principal")
+        elif exposure == EXPOSURE_API_GATEWAY:
+            score += 10
+            reasons.append("invocable via API Gateway")
+        elif exposure == EXPOSURE_LOAD_BALANCER:
+            score += 10
+            reasons.append("invocable via load balancer")
+        elif exposure == EXPOSURE_EVENT_SOURCE:
+            score += 5
+            reasons.append("triggered by an event source")
+    if not fn.exposures:
+        reasons.append("no external trigger found (internal only)")
+
     # Execution role breadth — the main differentiator between functions
     if fn.role_name:
         if role_breadth:
@@ -225,6 +280,7 @@ def _score_lambda_function(
         name=fn.function_name,
         score=score,
         reasons=reasons,
+        exposures=list(fn.exposures),
     )
 
 

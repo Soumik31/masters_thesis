@@ -40,6 +40,7 @@ _TM_FLAG_TO_KEY = {"code-exec": TM_CODE_EXEC, "ssrf": TM_SSRF}
 @click.option("--all-entry-points", is_flag=True, default=False, help="Scan all compute resources as entry points and compare")
 @click.option("--threat-model", type=click.Choice(["code-exec", "ssrf"]), default="code-exec", help="Primary threat model for the detailed report. Both are always reported side by side.")
 @click.option("--include-stopped", is_flag=True, default=False, help="Include EC2 instances that are not running as entry point candidates")
+@click.option("--exposed-only", is_flag=True, default=False, help="Only consider entry points an untrusted caller can reach without AWS credentials (public IP, public Function URL, or wildcard invoke policy)")
 @click.option("--profile", default=None, help="AWS CLI profile name to use")
 @click.option("--output", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose logging")
@@ -50,6 +51,7 @@ def main(
     all_entry_points: bool,
     threat_model: str,
     include_stopped: bool,
+    exposed_only: bool,
     profile: str | None,
     output_format: str,
     verbose: bool,
@@ -115,28 +117,48 @@ def main(
     # --- ALL ENTRY POINTS MODE ---
     if all_entry_points:
         _run_all_entry_points(
-            discovery_result, graphs, primary_tm, include_stopped, region
+            discovery_result, graphs, primary_tm, include_stopped, exposed_only,
+            edge_sets[primary_tm], region
         )
         return
 
     # --- AUTO ENTRY POINT MODE ---
     if auto_entry_point:
         click.echo("", err=True)
-        click.echo("Entry Point Selection:", err=True)
+        scope = "externally reachable only" if exposed_only else "all compute resources"
+        click.echo(f"Entry Point Selection ({scope}):", err=True)
         candidates = select_entry_point(
             discovery_result,
             edges=edge_sets[primary_tm],
             include_stopped=include_stopped,
+            exposed_only=exposed_only,
         )
 
         if not candidates:
-            click.echo("  No compute resources found. Cannot auto-select entry point.", err=True)
+            if exposed_only:
+                click.echo(
+                    "  No externally reachable entry points found. Nothing an unauthenticated\n"
+                    "  attacker can start from was discovered. Re-run without --exposed-only to\n"
+                    "  measure worst-case spread from an assumed internal compromise.",
+                    err=True,
+                )
+            else:
+                click.echo("  No compute resources found. Cannot auto-select entry point.", err=True)
             sys.exit(1)
+
+        if not exposed_only:
+            reachable = sum(1 for c in candidates if c.is_externally_reachable)
+            click.echo(
+                f"  Note: {reachable}/{len(candidates)} candidates are externally reachable. "
+                "Others require prior account access to reach.",
+                err=True,
+            )
 
         for i, candidate in enumerate(candidates[:5], 1):
             reasons_str = ", ".join(candidate.reasons) if candidate.reasons else "no specific exposure"
+            marker = "external" if candidate.is_externally_reachable else "internal"
             click.echo(
-                f"  #{i} {candidate.resource_id} ({candidate.name}) — Score: {candidate.score}/100",
+                f"  #{i} [{marker}] {candidate.resource_id} ({candidate.name}) — Score: {candidate.score}/100",
                 err=True,
             )
             click.echo(f"      Reasons: {reasons_str}", err=True)
@@ -249,35 +271,53 @@ def _run_all_entry_points(
     graphs: dict[str, nx.DiGraph],
     primary_tm: str,
     include_stopped: bool,
+    exposed_only: bool,
+    edges: list,
     region: str,
 ) -> None:
     """Run blast radius analysis for every compute resource and compare."""
-    entry_points: list[tuple[str, str, str]] = []  # (id, name, type)
-
-    for inst in discovery_result.ec2_instances:
-        if inst.state != "running" and not include_stopped:
-            continue
-        entry_points.append((inst.instance_id, inst.name or inst.instance_id, "EC2"))
-
-    for fn in discovery_result.lambda_functions:
-        entry_points.append((fn.function_arn, fn.function_name, "Lambda"))
+    # Use the selector so exposure and stopped-state filtering behave identically to
+    # auto mode, rather than being re-implemented here.
+    candidates = select_entry_point(
+        discovery_result,
+        edges=edges,
+        include_stopped=include_stopped,
+        exposed_only=exposed_only,
+    )
+    entry_points: list[tuple[str, str, str, bool]] = [
+        (
+            c.resource_id,
+            c.name,
+            "EC2" if c.resource_type == "ec2" else "Lambda",
+            c.is_externally_reachable,
+        )
+        for c in candidates
+    ]
 
     if not entry_points:
-        click.echo("No compute resources found.", err=True)
+        if exposed_only:
+            click.echo(
+                "No externally reachable entry points found. Re-run without --exposed-only "
+                "to measure worst-case spread from an assumed internal compromise.",
+                err=True,
+            )
+        else:
+            click.echo("No compute resources found.", err=True)
         sys.exit(1)
 
-    click.echo(f"\nScanning all entry points ({len(entry_points)} found)...\n", err=True)
+    scope = "externally reachable only" if exposed_only else "all compute resources"
+    click.echo(f"\nScanning entry points ({len(entry_points)} found, {scope})...\n", err=True)
 
     graph = graphs[primary_tm]
 
-    results: list[tuple[str, str, str, float, float, str]] = []
+    results: list[tuple[str, str, str, float, float, str, bool]] = []
     highest_br = -1.0
     highest_scoring = None
+    other_tm = TM_SSRF if primary_tm == TM_CODE_EXEC else TM_CODE_EXEC
 
-    for i, (ep_id, ep_name, ep_type) in enumerate(entry_points, 1):
+    for i, (ep_id, ep_name, ep_type, external) in enumerate(entry_points, 1):
         primary_scoring = score_blast_radius(graph, ep_id)
         br = primary_scoring.blast_radius_percent
-        other_tm = TM_SSRF if primary_tm == TM_CODE_EXEC else TM_CODE_EXEC
         br_other = score_blast_radius(graphs[other_tm], ep_id).blast_radius_percent
 
         if br > 40:
@@ -287,7 +327,7 @@ def _run_all_entry_points(
         else:
             status = "OK"
 
-        results.append((ep_id, ep_name, ep_type, br, br_other, status))
+        results.append((ep_id, ep_name, ep_type, br, br_other, status, external))
 
         if br > highest_br:
             highest_br = br
@@ -298,38 +338,40 @@ def _run_all_entry_points(
 
     results.sort(key=lambda r: r[3], reverse=True)
 
-    other_tm = TM_SSRF if primary_tm == TM_CODE_EXEC else TM_CODE_EXEC
     primary_header = "TM1 BR%" if primary_tm == TM_CODE_EXEC else "TM2 BR%"
     other_header = "TM2 BR%" if primary_tm == TM_CODE_EXEC else "TM1 BR%"
 
     click.echo("")
-    click.echo("=" * 78)
+    click.echo("=" * 90)
     click.echo("  ALL ENTRY POINTS — BLAST RADIUS COMPARISON")
-    click.echo("=" * 78)
-    click.echo(f"  | #  | Entry Point                | Type   | {primary_header:<8}| {other_header:<8}| Status   |")
-    click.echo("  |----|----------------------------|--------|---------|---------|----------|")
+    click.echo("=" * 90)
+    click.echo(f"  | #  | Entry Point                | Type   | Reach    | {primary_header:<8}| {other_header:<8}| Status   |")
+    click.echo("  |----|----------------------------|--------|----------|---------|---------|----------|")
 
-    for i, (ep_id, ep_name, ep_type, br, br_other, status) in enumerate(results, 1):
+    for i, (ep_id, ep_name, ep_type, br, br_other, status, external) in enumerate(results, 1):
         name_display = ep_name[:26] if len(ep_name) > 26 else ep_name
+        reach = "external" if external else "internal"
         click.echo(
-            f"  | {i:<2} | {name_display:<26} | {ep_type:<6} | {br:>6.1f}% | {br_other:>6.1f}% | {status:<8} |"
+            f"  | {i:<2} | {name_display:<26} | {ep_type:<6} | {reach:<8} | {br:>6.1f}% | {br_other:>6.1f}% | {status:<8} |"
         )
 
-    click.echo("  |----|----------------------------|--------|---------|---------|----------|")
+    click.echo("  |----|----------------------------|--------|----------|---------|---------|----------|")
 
     critical_count = sum(1 for r in results if r[5] == "CRITICAL")
     high_count = sum(1 for r in results if r[5] == "HIGH")
+    external_count = sum(1 for r in results if r[6])
 
-    click.echo("=" * 78)
+    click.echo("=" * 90)
     click.echo(f"  Primary threat model: {THREAT_MODEL_LABELS[primary_tm]}")
     click.echo(f"  Comparison column:    {THREAT_MODEL_LABELS[other_tm]}")
+    click.echo(f"  Externally reachable: {external_count}/{len(results)} entry points")
     if critical_count > 0:
         click.echo(f"  CRITICAL: {critical_count} entry point(s) exceed 40% blast radius threshold.")
     if high_count > 0:
         click.echo(f"  HIGH: {high_count} entry point(s) exceed 20% blast radius threshold.")
     if critical_count == 0 and high_count == 0:
         click.echo("  All entry points within acceptable blast radius limits.")
-    click.echo("=" * 78)
+    click.echo("=" * 90)
 
     if highest_scoring:
         generate_summary_chart(highest_scoring, graph, "blast-radius-summary.png")

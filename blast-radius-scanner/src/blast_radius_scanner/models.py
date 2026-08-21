@@ -92,6 +92,7 @@ class LambdaFunction:
     vpc_id: str | None = None
     subnet_ids: list[str] = field(default_factory=list)
     security_groups: list[SecurityGroup] = field(default_factory=list)
+    exposures: list[str] = field(default_factory=list)
 
 
 @dataclass
