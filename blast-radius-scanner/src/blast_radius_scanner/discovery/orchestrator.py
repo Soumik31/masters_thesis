@@ -10,7 +10,10 @@ from blast_radius_scanner.models import DiscoveryResult
 
 from blast_radius_scanner.discovery.dynamodb import discover_dynamodb_tables
 from blast_radius_scanner.discovery.ec2 import discover_ec2_instances, discover_security_groups
-from blast_radius_scanner.discovery.exposure import discover_lambda_exposures
+from blast_radius_scanner.discovery.exposure import (
+    discover_lambda_exposures,
+    discover_load_balancer_exposures,
+)
 from blast_radius_scanner.discovery.iam_roles import discover_iam_roles
 from blast_radius_scanner.discovery.lambda_fn import discover_lambda_functions
 from blast_radius_scanner.discovery.rds import discover_rds_instances
@@ -55,6 +58,19 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
         )
         for fn in lambda_functions:
             fn.exposures = exposures.get(fn.function_arn, [])
+
+    # Targets behind an internet-facing load balancer are reachable even without a public
+    # IP of their own, which is the standard pattern for a private web instance.
+    lb_exposures = discover_load_balancer_exposures(session)
+    if lb_exposures:
+        for inst in ec2_instances:
+            for kind in lb_exposures.get(inst.instance_id, []):
+                if kind not in inst.exposures:
+                    inst.exposures.append(kind)
+        for fn in lambda_functions:
+            for kind in lb_exposures.get(fn.function_arn, []):
+                if kind not in fn.exposures:
+                    fn.exposures.append(kind)
     vpc_endpoints = discover_vpc_endpoints(session)
     nat_gateways = discover_nat_gateways(session)
     internet_gateways = discover_internet_gateways(session)

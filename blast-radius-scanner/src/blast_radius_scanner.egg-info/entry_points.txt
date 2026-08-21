@@ -1,0 +1,2 @@
+[console_scripts]
+blast-radius-scanner = blast_radius_scanner.cli:main

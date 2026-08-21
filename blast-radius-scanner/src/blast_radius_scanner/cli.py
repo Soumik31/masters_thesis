@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 import sys
@@ -136,11 +137,14 @@ def main(
 
         if not candidates:
             if exposed_only:
-                click.echo(
-                    "  No externally reachable entry points found. Nothing an unauthenticated\n"
-                    "  attacker can start from was discovered. Re-run without --exposed-only to\n"
-                    "  measure worst-case spread from an assumed internal compromise.",
-                    err=True,
+                _write_no_exposure_result(
+                    discovery_result,
+                    graphs[primary_tm],
+                    primary_tm,
+                    region,
+                    account_name,
+                    account_id,
+                    edge_sets,
                 )
             else:
                 click.echo("  No compute resources found. Cannot auto-select entry point.", err=True)
@@ -192,6 +196,96 @@ def _get_account_identity(session: boto3.Session) -> tuple[str, str]:
     except Exception:
         account_name = account_id
     return account_name, account_id
+
+
+def _write_no_exposure_result(
+    discovery_result,
+    graph: nx.DiGraph,
+    primary_tm: str,
+    region: str,
+    account_name: str,
+    account_id: str,
+    edge_sets: dict[str, list],
+) -> None:
+    """Record a scan that found no externally reachable entry point.
+
+    "No unauthenticated entry point exists in this account" is a finding, not a failure, so
+    it needs to leave evidence behind. Previously the run exited before creating the results
+    directory, discarding all the discovery and graph work.
+    """
+    timestamp = datetime.now().strftime("%d%m%Y-%H%M")
+    results_dir = os.path.join("results", timestamp)
+    os.makedirs(results_dir, exist_ok=True)
+
+    lambda_total = len(discovery_result.lambda_functions)
+    ec2_total = len(discovery_result.ec2_instances)
+    with_any_signal = sum(1 for fn in discovery_result.lambda_functions if fn.exposures)
+    with_any_signal += sum(1 for i in discovery_result.ec2_instances if i.exposures or i.public_ip)
+
+    lines = [
+        "=" * 70,
+        "  BLAST RADIUS ANALYSIS REPORT",
+        "=" * 70,
+        "",
+        f"  Account:            {account_name} ({account_id})"
+        if account_name != account_id
+        else f"  Account:            {account_id}",
+        f"  Region:             {region}",
+        f"  Threat Model:       {THREAT_MODEL_LABELS[primary_tm]}",
+        "  Entry Point Scope:  externally reachable only",
+        "",
+        "  RESULT: no externally reachable entry point found.",
+        "",
+        "  No EC2 instance or Lambda function in this account can be reached by an",
+        "  unauthenticated caller. Reaching any compute resource here would first require",
+        "  obtaining AWS credentials, so blast radius from an external attacker is 0%.",
+        "",
+        f"  Compute resources examined:   {ec2_total} EC2, {lambda_total} Lambda",
+        f"  With any exposure signal:     {with_any_signal}",
+        f"  Graph ({primary_tm}):         {graph.number_of_nodes()} nodes, "
+        f"{graph.number_of_edges()} edges",
+        "",
+        "  Edge counts per threat model:",
+    ]
+    for tm, edges in edge_sets.items():
+        lines.append(f"    {tm}: {len(edges)} edges")
+    lines += [
+        "",
+        "  Note: this does not mean the roles are tightly scoped. Re-run without",
+        "  --exposed-only to measure the latent blast radius that would apply if any",
+        "  resource were compromised by other means.",
+        "",
+        "=" * 70,
+    ]
+    report = "\n".join(lines)
+
+    with open(os.path.join(results_dir, "report.txt"), "w") as f:
+        f.write(report)
+
+    summary = {
+        "account_name": account_name,
+        "account_id": account_id,
+        "region": region,
+        "threat_model": primary_tm,
+        "entry_point_scope": "exposed_only",
+        "externally_reachable_entry_points": 0,
+        "blast_radius_percent": 0.0,
+        "ec2_instances": ec2_total,
+        "lambda_functions": lambda_total,
+        "resources_with_exposure_signal": with_any_signal,
+        "graph_summary": {
+            "total_nodes": graph.number_of_nodes(),
+            "total_edges": graph.number_of_edges(),
+        },
+        "edge_counts": {tm: len(edges) for tm, edges in edge_sets.items()},
+    }
+    with open(os.path.join(results_dir, "results.json"), "w") as f:
+        json.dump(summary, f, indent=2)
+
+    export_graph_gexf(graph, os.path.join(results_dir, "blast-radius-graph.gexf"))
+
+    click.echo(report)
+    click.echo(f"\nNo externally reachable entry point. Findings saved to: {results_dir}/", err=True)
 
 
 def _run_single_entry_point(

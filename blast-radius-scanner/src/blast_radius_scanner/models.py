@@ -45,6 +45,7 @@ class EC2Instance:
     iam_role_name: str | None = None
     imds_http_tokens: str = "optional"  # "optional" or "required"
     imds_hop_limit: int = 1
+    exposures: list[str] = field(default_factory=list)
 
 
 @dataclass

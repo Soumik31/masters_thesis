@@ -26,6 +26,7 @@ EXPOSURE_PUBLIC_FUNCTION_URL = "public_function_url"
 EXPOSURE_WILDCARD_PRINCIPAL = "wildcard_invoke_principal"
 EXPOSURE_API_GATEWAY = "api_gateway"
 EXPOSURE_LOAD_BALANCER = "load_balancer"
+EXPOSURE_INTERNET_FACING_LB = "internet_facing_load_balancer"
 EXPOSURE_EVENT_SOURCE = "event_source"
 
 # Service principals in a resource-based policy that imply a front door
@@ -34,12 +35,92 @@ _FRONT_DOOR_SERVICES = {
     "elasticloadbalancing.amazonaws.com": EXPOSURE_LOAD_BALANCER,
 }
 
-# Exposures that mean an unauthenticated caller from the internet can trigger the function.
-# API Gateway is excluded because the API itself may require authentication, which we cannot
-# determine from the function's policy alone.
+# Exposures that mean an unauthenticated caller from the internet can reach the resource.
+#
+# EXPOSURE_LOAD_BALANCER (inferred from a Lambda resource policy) is excluded because the
+# policy alone does not say whether the balancer is internet-facing. EXPOSURE_API_GATEWAY is
+# excluded because the API may require authentication.
+#
+# EXPOSURE_INTERNET_FACING_LB is included: it is only set after confirming the balancer's
+# Scheme is "internet-facing" and the resource is a registered target. A private instance
+# behind a public load balancer is the standard production web pattern, and omitting it
+# would miss the most common genuine entry point. Listener-level authentication (OIDC or
+# Cognito) is not inspected, so this may over-claim for balancers that authenticate.
 UNAUTHENTICATED_EXPOSURES = frozenset(
-    {EXPOSURE_PUBLIC_FUNCTION_URL, EXPOSURE_WILDCARD_PRINCIPAL}
+    {
+        EXPOSURE_PUBLIC_FUNCTION_URL,
+        EXPOSURE_WILDCARD_PRINCIPAL,
+        EXPOSURE_INTERNET_FACING_LB,
+    }
 )
+
+
+def discover_load_balancer_exposures(session: boto3.Session) -> dict[str, list[str]]:
+    """Return resource ID -> exposure kinds for targets behind internet-facing balancers.
+
+    Keys are EC2 instance IDs or Lambda function ARNs, matching the node identifiers used
+    elsewhere. Returns an empty mapping if elasticloadbalancing cannot be queried, so a
+    restricted principal degrades rather than failing the scan.
+
+    Only ALB and NLB (elbv2) are covered. Classic ELB is not queried.
+    """
+    exposures: dict[str, list[str]] = {}
+    try:
+        client = session.client("elbv2")
+        public_lb_arns: list[str] = []
+        lb_paginator = client.get_paginator("describe_load_balancers")
+        for page in lb_paginator.paginate():
+            for lb in page.get("LoadBalancers", []):
+                if lb.get("Scheme") == "internet-facing" and lb.get("LoadBalancerArn"):
+                    public_lb_arns.append(lb["LoadBalancerArn"])
+
+        if not public_lb_arns:
+            logger.info("No internet-facing load balancers found")
+            return {}
+
+        for lb_arn in public_lb_arns:
+            for target_id in _targets_behind(client, lb_arn):
+                exposures.setdefault(target_id, [])
+                if EXPOSURE_INTERNET_FACING_LB not in exposures[target_id]:
+                    exposures[target_id].append(EXPOSURE_INTERNET_FACING_LB)
+
+        logger.info(
+            "Load balancer exposure: %d internet-facing balancer(s), %d target(s) reachable",
+            len(public_lb_arns),
+            len(exposures),
+        )
+    except Exception as e:
+        logger.warning(
+            "Could not query load balancers (instances behind a public ALB will not be "
+            "marked externally reachable): %s",
+            e,
+        )
+        return {}
+
+    return exposures
+
+
+def _targets_behind(client: Any, lb_arn: str) -> list[str]:
+    """Registered target IDs for every target group attached to a load balancer."""
+    target_ids: list[str] = []
+    try:
+        tg_paginator = client.get_paginator("describe_target_groups")
+        for page in tg_paginator.paginate(LoadBalancerArn=lb_arn):
+            for tg in page.get("TargetGroups", []):
+                tg_arn = tg.get("TargetGroupArn")
+                if not tg_arn:
+                    continue
+                try:
+                    health = client.describe_target_health(TargetGroupArn=tg_arn)
+                except Exception:
+                    continue
+                for entry in health.get("TargetHealthDescriptions", []):
+                    tid = entry.get("Target", {}).get("Id")
+                    if tid:
+                        target_ids.append(tid)
+    except Exception as e:
+        logger.debug("Could not resolve targets for %s: %s", lb_arn, e)
+    return target_ids
 
 
 def discover_lambda_exposures(session: boto3.Session, function_arns: list[str]) -> dict[str, list[str]]:

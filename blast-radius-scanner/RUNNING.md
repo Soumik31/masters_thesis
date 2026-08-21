@@ -148,6 +148,7 @@ Each entry point candidate is labelled `external` or `internal`:
 | EC2 with a public IP | yes | Directly addressable from the internet |
 | Lambda Function URL, `AuthType: NONE` | yes | Callable by anyone over HTTPS |
 | Lambda resource policy with `Principal: "*"` | yes | Any caller may invoke it |
+| Registered behind an internet-facing ALB or NLB | yes | Reachable through the balancer even with no public IP; the standard private-web-instance pattern |
 | Lambda behind API Gateway | no | Detected and shown, but the API itself may require authentication |
 | Lambda behind a load balancer | no | Same reasoning as API Gateway |
 | Lambda with an event source mapping | no | Only matters if an attacker can write to the upstream queue or bucket |
@@ -244,6 +245,7 @@ The scanner is read-only. Every AWS call it makes is a `Describe*`, `Get*` or `L
 - **RDS** `describe_db_instances`
 - **DynamoDB** `list_tables`, `describe_table`
 - **IAM** `list_roles`, `list_role_policies`, `get_role_policy`, `list_attached_role_policies`, `get_policy`, `get_policy_version`, `get_instance_profile`, `list_account_aliases`
+- **ELBv2** `describe_load_balancers`, `describe_target_groups`, `describe_target_health`
 - **STS** `get_caller_identity`
 
 Two qualifications: the scanner writes report files to local disk, and the reads are recorded in CloudTrail. Read volume has grown noticeably — role chaining resolves policies transitively, and exposure detection makes up to three calls per Lambda function, so an account with 81 functions adds roughly 240 read calls on top. Worth knowing before scanning production if anyone monitors API rates.

@@ -9,6 +9,7 @@ from dataclasses import dataclass, field
 from blast_radius_scanner.discovery.exposure import (
     EXPOSURE_API_GATEWAY,
     EXPOSURE_EVENT_SOURCE,
+    EXPOSURE_INTERNET_FACING_LB,
     EXPOSURE_LOAD_BALANCER,
     EXPOSURE_PUBLIC_FUNCTION_URL,
     EXPOSURE_WILDCARD_PRINCIPAL,
@@ -197,13 +198,17 @@ def _score_ec2_instance(
     if inst.state != "running":
         reasons.append(f"instance state={inst.state}")
 
+    # Reachability by an untrusted caller. A public IP is direct; being registered behind an
+    # internet-facing load balancer is equally reachable and is the usual pattern for a
+    # private web instance, so both count.
+    exposures = list(inst.exposures)
+    if inst.public_ip and EXPOSURE_WILDCARD_PRINCIPAL not in exposures:
+        exposures.append(EXPOSURE_WILDCARD_PRINCIPAL)
+    if EXPOSURE_INTERNET_FACING_LB in exposures:
+        reasons.append("behind an internet-facing load balancer")
+
     # Cap at 100
     score = min(score, 100)
-
-    # An EC2 instance is reachable by an untrusted caller when it has a public IP. This is
-    # recorded using the same wildcard-principal marker as Lambda so that
-    # is_externally_reachable has one meaning across resource types.
-    exposures = [EXPOSURE_WILDCARD_PRINCIPAL] if inst.public_ip else []
 
     return EntryPointCandidate(
         resource_id=inst.instance_id,
@@ -256,6 +261,9 @@ def _score_lambda_function(
         elif exposure == EXPOSURE_LOAD_BALANCER:
             score += 10
             reasons.append("invocable via load balancer")
+        elif exposure == EXPOSURE_INTERNET_FACING_LB:
+            score += 25
+            reasons.append("behind an internet-facing load balancer")
         elif exposure == EXPOSURE_EVENT_SOURCE:
             score += 5
             reasons.append("triggered by an event source")
