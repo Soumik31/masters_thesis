@@ -10,6 +10,7 @@ from blast_radius_scanner.models import DiscoveryResult
 
 from blast_radius_scanner.discovery.dynamodb import discover_dynamodb_tables
 from blast_radius_scanner.discovery.ec2 import discover_ec2_instances, discover_security_groups
+from blast_radius_scanner.discovery.iam_roles import discover_iam_roles
 from blast_radius_scanner.discovery.lambda_fn import discover_lambda_functions
 from blast_radius_scanner.discovery.rds import discover_rds_instances
 from blast_radius_scanner.discovery.s3 import discover_s3_buckets
@@ -49,6 +50,7 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
     nat_gateways = discover_nat_gateways(session)
     internet_gateways = discover_internet_gateways(session)
     route_tables = discover_route_tables(session)
+    iam_roles = discover_iam_roles(session)
 
     result = DiscoveryResult(
         ec2_instances=ec2_instances,
@@ -61,6 +63,7 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
         internet_gateways=internet_gateways,
         route_tables=route_tables,
         security_groups=security_groups,
+        iam_roles=iam_roles,
     )
 
     logger.info(

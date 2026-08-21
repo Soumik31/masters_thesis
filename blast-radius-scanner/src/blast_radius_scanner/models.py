@@ -164,6 +164,7 @@ class DiscoveryResult:
     internet_gateways: list[InternetGateway] = field(default_factory=list)
     route_tables: list[RouteTable] = field(default_factory=list)
     security_groups: dict[str, SecurityGroup] = field(default_factory=dict)
+    iam_roles: list[str] = field(default_factory=list)
 
     @property
     def total_resources(self) -> int:

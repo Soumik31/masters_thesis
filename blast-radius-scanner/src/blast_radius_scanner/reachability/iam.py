@@ -46,32 +46,92 @@ INTERESTING_ACTIONS: dict[str, str] = {
 def discover_iam_edges(
     session: boto3.Session,
     discovery: DiscoveryResult,
+    max_roles: int = 200,
 ) -> list[Edge]:
     """Determine IAM-based reachability from roles to target resources.
 
-    For each IAM role attached to a compute resource (EC2 instance profile, Lambda execution role),
-    we inspect its policies to find which resources it can access.
+    Starts from roles attached to compute resources (EC2 instance profiles, Lambda
+    execution roles) and inspects their policies to find reachable resources. When a
+    policy grants sts:AssumeRole, the reached role is added to a worklist and its own
+    policies are resolved in turn, so multi-hop role chains are captured. Without this
+    transitive step every chain would dead-end after one hop and the graph would reduce
+    to single-hop policy analysis.
+
+    Limitations worth stating in the methodology:
+    - Trust policies are not evaluated. A chain edge is emitted when the *source* role is
+      granted sts:AssumeRole on a target, even if the target's trust policy would refuse
+      the assumption. This over-approximates rather than under-approximates, which is the
+      safer direction for a security measurement but does produce some false edges.
+    - Roles reached only by chaining are not pre-added as graph nodes; they are created on
+      demand by the graph builder. This keeps the blast radius denominator restricted to
+      compute-attached roles plus actually-reached roles, so scores stay comparable across
+      scans instead of being diluted by unrelated service-linked roles.
+
+    Args:
+        session: boto3 session for IAM API calls.
+        discovery: The complete discovery result.
+        max_roles: Safety cap on how many distinct roles are resolved, to bound API calls
+            on accounts where a role can assume everything.
     """
     iam_client = session.client("iam")
     edges: list[Edge] = []
 
-    # Collect all unique role names from EC2 and Lambda
-    role_names: set[str] = set()
+    # Seed the worklist with roles attached to compute resources
+    worklist: list[str] = []
     for inst in discovery.ec2_instances:
         if inst.iam_role_name:
-            role_names.add(inst.iam_role_name)
+            worklist.append(inst.iam_role_name)
     for fn in discovery.lambda_functions:
         if fn.role_name:
-            role_names.add(fn.role_name)
+            worklist.append(fn.role_name)
 
-    # For each role, get its effective policies and match against discovered resources
-    for role_name in role_names:
+    processed: set[str] = set()
+    capped = False
+
+    while worklist:
+        role_name = worklist.pop()
+        if role_name in processed:
+            continue
+        if len(processed) >= max_roles:
+            capped = True
+            break
+        processed.add(role_name)
+
         statements = _get_role_policy_statements(iam_client, role_name)
         role_edges = _match_statements_to_resources(role_name, statements, discovery)
         edges.extend(role_edges)
 
-    logger.info("Discovered %d IAM edges", len(edges))
+        # Follow role chains: any role reached becomes a new resolution target
+        for edge in role_edges:
+            if edge.target_id.startswith("iam_role:"):
+                chained = edge.target_id.split("iam_role:", 1)[1]
+                if chained not in processed:
+                    worklist.append(chained)
+
+    if capped:
+        logger.warning(
+            "Role resolution capped at %d roles; some chains may be truncated", max_roles
+        )
+
+    logger.info(
+        "Discovered %d IAM edges across %d roles (%d chained beyond compute-attached)",
+        len(edges),
+        len(processed),
+        max(len(processed) - _seed_role_count(discovery), 0),
+    )
     return edges
+
+
+def _seed_role_count(discovery: DiscoveryResult) -> int:
+    """Number of distinct roles directly attached to compute resources."""
+    names: set[str] = set()
+    for inst in discovery.ec2_instances:
+        if inst.iam_role_name:
+            names.add(inst.iam_role_name)
+    for fn in discovery.lambda_functions:
+        if fn.role_name:
+            names.add(fn.role_name)
+    return len(names)
 
 
 def _get_role_policy_statements(iam_client: Any, role_name: str) -> list[dict[str, Any]]:
@@ -242,15 +302,33 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
         targets.extend(fn.function_arn for fn in discovery.lambda_functions)
     elif category.startswith("rds"):
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
+    elif category == "assume_role":
+        # Role chaining: sts:AssumeRole on "*" can reach any role in the account
+        targets.extend(f"iam_role:{name}" for name in _known_role_names(discovery))
     elif category == "full_access":
-        # Full access = everything
+        # Full access = everything, including role chaining ("*" subsumes sts:AssumeRole)
         targets.extend(f"s3:{b.name}" for b in discovery.s3_buckets)
         targets.extend(f"dynamodb:{t.table_name}" for t in discovery.dynamodb_tables)
         targets.extend(fn.function_arn for fn in discovery.lambda_functions)
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
         targets.extend(inst.instance_id for inst in discovery.ec2_instances)
+        targets.extend(f"iam_role:{name}" for name in _known_role_names(discovery))
 
     return targets
+
+
+def _known_role_names(discovery: DiscoveryResult) -> set[str]:
+    """All role names we can resolve: account-wide if listable, else compute-attached."""
+    if discovery.iam_roles:
+        return set(discovery.iam_roles)
+    names: set[str] = set()
+    for inst in discovery.ec2_instances:
+        if inst.iam_role_name:
+            names.add(inst.iam_role_name)
+    for fn in discovery.lambda_functions:
+        if fn.role_name:
+            names.add(fn.role_name)
+    return names
 
 
 def _arn_to_target_id(
@@ -281,6 +359,16 @@ def _arn_to_target_id(
             if fn.function_arn == resource_arn or fn.function_name in resource_arn:
                 return fn.function_arn
         return None
+
+    # IAM role: arn:aws:iam::account:role/role-name  (role chaining via sts:AssumeRole)
+    if ":role/" in resource_arn:
+        role_name = resource_arn.split(":role/")[-1].split("/")[-1]
+        known = _known_role_names(discovery)
+        if role_name in known:
+            return f"iam_role:{role_name}"
+        # Emit the chain edge even if the role was not enumerable, so the path is not
+        # silently lost when iam:ListRoles is unavailable.
+        return f"iam_role:{role_name}" if role_name else None
 
     # EC2 instance (rare in policies, but possible)
     if ":instance/" in resource_arn:
