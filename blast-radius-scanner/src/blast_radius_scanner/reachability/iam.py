@@ -219,24 +219,74 @@ def _match_actions(actions: list[str]) -> list[tuple[str, str]]:
     """Match actions against interesting actions. Returns (action, category) pairs.
 
     IAM actions are case-insensitive, so we normalize to lowercase for comparison.
+
+    Two rules matter here, both of which were previously wrong:
+
+    1. A literal ``Action: "*"`` is the only thing that counts as full access. Previously
+       the ``"*"`` entry in INTERESTING_ACTIONS was reachable by *any* action, because
+       ``_action_matches`` short-circuited on ``pattern == "*"``. That meant harmless
+       permissions such as ``logs:PutLogEvents`` or ``cloudwatch:PutMetricData`` were
+       categorised as full_access and expanded to every resource in the account. Since
+       almost every execution role carries CloudWatch Logs permissions by default, nearly
+       every role appeared to reach everything.
+    2. Unrecognised actions are now ignored rather than assumed dangerous. This
+       under-approximates by design: an action we do not model contributes no edge. That
+       is the safer error for a measurement tool, because the alternative silently
+       inflates every score.
+
+    Note that ``Action: "*"`` also used to match the first map entry (``s3:GetObject``)
+    via the trailing-wildcard branch, so genuine admin grants were *under*-counted. It is
+    now handled explicitly before pattern matching.
     """
     matched: list[tuple[str, str]] = []
 
     for action in actions:
         action_lower = action.lower()
-        # Check against all patterns (case-insensitive)
-        for pattern, category in INTERESTING_ACTIONS.items():
-            if _action_matches(action_lower, pattern.lower()):
-                matched.append((action, category))
-                break
+
+        # Literal "all actions" grant — genuine admin
+        if action_lower == "*":
+            matched.append((action, "full_access"))
+            continue
+
+        category = _categorise_action(action_lower)
+        if category:
+            matched.append((action, category))
 
     return matched
+
+
+def _categorise_action(action_lower: str) -> str | None:
+    """Return the category for an action, or None if it is not modelled.
+
+    Exact matches take precedence over wildcard expansion, so that ``s3:*`` is categorised
+    as ``s3_full`` rather than picking up ``s3_read`` from ``s3:GetObject`` purely because
+    that entry appears earlier in INTERESTING_ACTIONS. Relying on dict order made the
+    category depend on where a pattern happened to sit in the map.
+    """
+    # Pass 1: exact match
+    for pattern, category in INTERESTING_ACTIONS.items():
+        if pattern == "*":
+            continue
+        if action_lower == pattern.lower():
+            return category
+
+    # Pass 2: wildcard expansion in either direction
+    for pattern, category in INTERESTING_ACTIONS.items():
+        # The "*" entry is only reachable via the explicit check in _match_actions; it must
+        # never act as a catch-all for actions we do not model.
+        if pattern == "*":
+            continue
+        if _action_matches(action_lower, pattern.lower()):
+            return category
+
+    return None
 
 
 def _action_matches(action: str, pattern: str) -> bool:
     """Check if an action matches a pattern (supporting * wildcards)."""
     if pattern == "*":
-        return True
+        # Only a literal all-actions grant matches. See _match_actions.
+        return action == "*"
     if action == pattern:
         return True
     # Handle wildcards like "s3:*"
@@ -303,8 +353,8 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
     elif category.startswith("rds"):
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
     elif category == "assume_role":
-        # Role chaining: sts:AssumeRole on "*" can reach any role in the account
-        targets.extend(f"iam_role:{name}" for name in _known_role_names(discovery))
+        # Role chaining: sts:AssumeRole on "*" can reach any assumable role in the account
+        targets.extend(f"iam_role:{name}" for name in _assumable_role_names(discovery))
     elif category == "full_access":
         # Full access = everything, including role chaining ("*" subsumes sts:AssumeRole)
         targets.extend(f"s3:{b.name}" for b in discovery.s3_buckets)
@@ -312,7 +362,7 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
         targets.extend(fn.function_arn for fn in discovery.lambda_functions)
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
         targets.extend(inst.instance_id for inst in discovery.ec2_instances)
-        targets.extend(f"iam_role:{name}" for name in _known_role_names(discovery))
+        targets.extend(f"iam_role:{name}" for name in _assumable_role_names(discovery))
 
     return targets
 
@@ -329,6 +379,29 @@ def _known_role_names(discovery: DiscoveryResult) -> set[str]:
         if fn.role_name:
             names.add(fn.role_name)
     return names
+
+
+# Roles that a workload role can never assume, because their trust policies admit only a
+# specific AWS service or the SSO provider. Excluding them matters because trust policies
+# are not evaluated, so a wildcard sts:AssumeRole grant would otherwise appear to reach
+# every role in the account, including ones no workload could ever assume.
+_NON_ASSUMABLE_ROLE_PREFIXES = (
+    "AWSServiceRoleFor",
+    "AWSReservedSSO_",
+    "aws-controltower-",
+    "stacksets-exec-",
+    "AWSControlTowerExecution",
+    "AWSAFT",
+)
+
+
+def _assumable_role_names(discovery: DiscoveryResult) -> list[str]:
+    """Role names a workload role could plausibly assume."""
+    return [
+        name
+        for name in _known_role_names(discovery)
+        if not name.startswith(_NON_ASSUMABLE_ROLE_PREFIXES)
+    ]
 
 
 def _arn_to_target_id(
@@ -363,12 +436,12 @@ def _arn_to_target_id(
     # IAM role: arn:aws:iam::account:role/role-name  (role chaining via sts:AssumeRole)
     if ":role/" in resource_arn:
         role_name = resource_arn.split(":role/")[-1].split("/")[-1]
-        known = _known_role_names(discovery)
-        if role_name in known:
-            return f"iam_role:{role_name}"
-        # Emit the chain edge even if the role was not enumerable, so the path is not
-        # silently lost when iam:ListRoles is unavailable.
-        return f"iam_role:{role_name}" if role_name else None
+        # Reject wildcard patterns. An ARN like arn:aws:iam::*:role/*AWSBackup* is a
+        # pattern, not a role, and treating it literally created phantom nodes such as
+        # "iam_role:*" and "iam_role:*AWSBackup*".
+        if not role_name or "*" in role_name or "?" in role_name:
+            return None
+        return f"iam_role:{role_name}"
 
     # EC2 instance (rare in policies, but possible)
     if ":instance/" in resource_arn:
