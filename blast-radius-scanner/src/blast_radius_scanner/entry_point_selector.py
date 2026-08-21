@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass, field
 
 from blast_radius_scanner.models import (
@@ -27,7 +28,11 @@ class EntryPointCandidate:
     reasons: list[str] = field(default_factory=list)
 
 
-def select_entry_point(discovery: DiscoveryResult) -> list[EntryPointCandidate]:
+def select_entry_point(
+    discovery: DiscoveryResult,
+    edges: list | None = None,
+    include_stopped: bool = False,
+) -> list[EntryPointCandidate]:
     """Analyze all compute resources and rank them by exposure score.
 
     Scoring criteria (max 100 points):
@@ -35,7 +40,18 @@ def select_entry_point(discovery: DiscoveryResult) -> list[EntryPointCandidate]:
     - Internet route (NAT/IGW in subnet route table): +20
     - IMDSv1 enabled (HttpTokens=optional): +20
     - Broad SG egress (0.0.0.0/0 rule): +15
-    - Broad IAM role (many attached policies or wildcard actions): +20
+    - IAM role breadth: up to +40
+
+    Role breadth is measured from the reachability edge list when supplied: the number of
+    distinct resources the attached role can act on. That is a direct measure of privilege
+    rather than a proxy. Without `edges` it falls back to counting how many resources share
+    the role, which cannot differentiate functions and left every Lambda tied at the same
+    score.
+
+    Args:
+        discovery: Discovery result.
+        edges: Optional reachability edges, used to measure role breadth.
+        include_stopped: Include EC2 instances that are not running.
 
     Returns candidates sorted by score descending.
     """
@@ -44,16 +60,20 @@ def select_entry_point(discovery: DiscoveryResult) -> list[EntryPointCandidate]:
     # Build subnet → route table map for internet route checks
     subnet_rt_map, main_tables = _build_subnet_route_map(discovery.route_tables)
 
+    role_breadth = _build_role_breadth(edges) if edges else {}
+
     # Score EC2 instances
     for inst in discovery.ec2_instances:
-        if inst.state != "running":
+        if inst.state != "running" and not include_stopped:
             continue
-        candidate = _score_ec2_instance(inst, subnet_rt_map, main_tables, discovery)
+        candidate = _score_ec2_instance(
+            inst, subnet_rt_map, main_tables, discovery, role_breadth
+        )
         candidates.append(candidate)
 
     # Score Lambda functions
     for fn in discovery.lambda_functions:
-        candidate = _score_lambda_function(fn)
+        candidate = _score_lambda_function(fn, role_breadth)
         candidates.append(candidate)
 
     # Sort by score descending
@@ -62,11 +82,49 @@ def select_entry_point(discovery: DiscoveryResult) -> list[EntryPointCandidate]:
     return candidates
 
 
+def _build_role_breadth(edges: list) -> dict[str, int]:
+    """Count distinct resources each role can act on, keyed by role name."""
+    breadth: dict[str, set[str]] = {}
+    for edge in edges:
+        source = getattr(edge, "source_id", "")
+        if not source.startswith("iam_role:"):
+            continue
+        role_name = source.split("iam_role:", 1)[1]
+        breadth.setdefault(role_name, set()).add(getattr(edge, "target_id", ""))
+    return {role: len(targets) for role, targets in breadth.items()}
+
+
+def _score_role_breadth(role_name: str | None, role_breadth: dict[str, int]) -> tuple[int, str]:
+    """Score a role by how many distinct resources it can act on.
+
+    Uses a log scale capped at 40 points rather than coarse bands, so that any difference
+    in breadth produces a different score. Bands were too blunt: a role reaching 1
+    resource and one reaching 5 landed on the same score, leaving functions tied and
+    auto-selection effectively arbitrary. A log curve also reflects that the marginal risk
+    of the 50th reachable resource is smaller than that of the 2nd.
+    """
+    if not role_name:
+        return 0, ""
+    count = role_breadth.get(role_name, 0)
+    if count == 0:
+        return 0, f"role reaches no discovered resources ({role_name})"
+
+    points = min(40, round(8 * math.log2(count + 1)))
+    if count > 20:
+        qualifier = " (very broad)"
+    elif count > 5:
+        qualifier = " (broad)"
+    else:
+        qualifier = ""
+    return points, f"role reaches {count} resource(s){qualifier}"
+
+
 def _score_ec2_instance(
     inst: EC2Instance,
     subnet_rt_map: dict[str, RouteTable],
     main_tables: dict[str, RouteTable],
     discovery: DiscoveryResult,
+    role_breadth: dict[str, int] | None = None,
 ) -> EntryPointCandidate:
     """Score an EC2 instance as a potential entry point."""
     score = 0
@@ -98,10 +156,17 @@ def _score_ec2_instance(
 
     # 5. IAM role breadth
     if inst.iam_role_name:
-        role_score, role_reason = _score_iam_role_breadth(inst.iam_role_name, discovery)
+        if role_breadth:
+            role_score, role_reason = _score_role_breadth(inst.iam_role_name, role_breadth)
+        else:
+            role_score, role_reason = _score_iam_role_breadth(inst.iam_role_name, discovery)
         score += role_score
         if role_reason:
             reasons.append(role_reason)
+
+    # Also note stopped instances so the reason string explains a low-likelihood pick
+    if inst.state != "running":
+        reasons.append(f"instance state={inst.state}")
 
     # Cap at 100
     score = min(score, 100)
@@ -115,11 +180,15 @@ def _score_ec2_instance(
     )
 
 
-def _score_lambda_function(fn: LambdaFunction) -> EntryPointCandidate:
+def _score_lambda_function(
+    fn: LambdaFunction,
+    role_breadth: dict[str, int] | None = None,
+) -> EntryPointCandidate:
     """Score a Lambda function as a potential entry point.
 
-    Lambdas are generally lower risk as entry points since they don't have
-    public IPs or IMDS, but their IAM role can still be broad.
+    Lambdas have no public IP and no IMDS, so network-derived signals are weak. The
+    discriminating factor is the execution role's breadth: compromising the function code
+    yields those credentials directly from the execution environment.
     """
     score = 0
     reasons: list[str] = []
@@ -138,11 +207,15 @@ def _score_lambda_function(fn: LambdaFunction) -> EntryPointCandidate:
             score += 10
             reasons.append("broad SG egress (0.0.0.0/0)")
 
-    # IAM role breadth (approximate — we don't have policy details here)
-    # We'll give it a base score for having a role
+    # Execution role breadth — the main differentiator between functions
     if fn.role_name:
-        score += 10
-        reasons.append(f"has IAM role ({fn.role_name})")
+        if role_breadth:
+            role_score, role_reason = _score_role_breadth(fn.role_name, role_breadth)
+        else:
+            role_score, role_reason = 10, f"has IAM role ({fn.role_name})"
+        score += role_score
+        if role_reason:
+            reasons.append(role_reason)
 
     score = min(score, 100)
 
