@@ -127,7 +127,15 @@ def generate_edge_impact_chart(
         return
 
     # Sort by impact descending (already sorted, but be explicit)
-    impacts = sorted(scoring.edge_impacts, key=lambda e: e.impact_delta, reverse=True)
+    # Identity edges are the threat model premise, not controls. Including them put a
+    # dominant bar labelled "execution role credentials" on a chart titled as controls,
+    # implying a mitigation that does not exist.
+    control_impacts = [e for e in scoring.edge_impacts if e.edge_type != "identity"]
+    if not control_impacts:
+        logger.warning("No mitigable edge impacts to chart (identity edges excluded).")
+        return
+
+    impacts = sorted(control_impacts, key=lambda e: e.impact_delta, reverse=True)
 
     # Limit to top 15 for readability
     impacts = impacts[:15]

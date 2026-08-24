@@ -87,6 +87,9 @@ def discover_iam_edges(
 
     processed: set[str] = set()
     capped = False
+    account_id = _account_id_from_discovery(discovery)
+    trust_cache: dict[str, set[str] | None] = {}
+    dropped_chains = 0
 
     while worklist:
         role_name = worklist.pop()
@@ -99,18 +102,38 @@ def discover_iam_edges(
 
         statements = _get_role_policy_statements(iam_client, role_name)
         role_edges = _match_statements_to_resources(role_name, statements, discovery)
-        edges.extend(role_edges)
 
-        # Follow role chains: any role reached becomes a new resolution target
+        kept_edges = []
         for edge in role_edges:
-            if edge.target_id.startswith("iam_role:"):
-                chained = edge.target_id.split("iam_role:", 1)[1]
-                if chained not in processed:
-                    worklist.append(chained)
+            if not edge.target_id.startswith("iam_role:"):
+                kept_edges.append(edge)
+                continue
+
+            # Role chaining: only keep the edge if the target's trust policy actually
+            # permits this role to assume it. Without this check a wildcard
+            # sts:AssumeRole grant appears to reach every role in the account, including
+            # service-linked and CDK deployment roles that would refuse the assumption.
+            chained = edge.target_id.split("iam_role:", 1)[1]
+            if chained not in trust_cache:
+                trust_cache[chained] = _get_trust_policy_principals(iam_client, chained)
+            if not _trust_permits_role(trust_cache[chained], role_name, account_id):
+                dropped_chains += 1
+                continue
+
+            kept_edges.append(edge)
+            if chained not in processed:
+                worklist.append(chained)
+
+        edges.extend(kept_edges)
 
     if capped:
         logger.warning(
             "Role resolution capped at %d roles; some chains may be truncated", max_roles
+        )
+    if dropped_chains:
+        logger.info(
+            "Dropped %d chain edge(s) refused by the target role's trust policy",
+            dropped_chains,
         )
 
     logger.info(
@@ -132,6 +155,104 @@ def _seed_role_count(discovery: DiscoveryResult) -> int:
         if fn.role_name:
             names.add(fn.role_name)
     return len(names)
+
+
+def _account_id_from_discovery(discovery: DiscoveryResult) -> str | None:
+    """Extract the account ID from any discovered ARN, for building role ARNs."""
+    for fn in discovery.lambda_functions:
+        for arn in (fn.role_arn, fn.function_arn):
+            parts = (arn or "").split(":")
+            if len(parts) > 4 and parts[4]:
+                return parts[4]
+    for inst in discovery.ec2_instances:
+        parts = (inst.iam_instance_profile_arn or "").split(":")
+        if len(parts) > 4 and parts[4]:
+            return parts[4]
+    for table in discovery.dynamodb_tables:
+        parts = (table.table_arn or "").split(":")
+        if len(parts) > 4 and parts[4]:
+            return parts[4]
+    return None
+
+
+def _get_trust_policy_principals(iam_client: Any, role_name: str) -> set[str] | None:
+    """Principals permitted to call sts:AssumeRole on this role.
+
+    Returns None when the trust policy cannot be read, which callers treat as "unknown"
+    rather than "denied", so a missing iam:GetRole permission does not silently delete
+    every chain edge.
+    """
+    try:
+        response = iam_client.get_role(RoleName=role_name)
+        doc = response["Role"]["AssumeRolePolicyDocument"]
+        if isinstance(doc, str):
+            doc = json.loads(doc)
+    except Exception as e:
+        logger.debug("Could not read trust policy for %s: %s", role_name, e)
+        return None
+
+    principals: set[str] = set()
+    statements = doc.get("Statement", [])
+    if isinstance(statements, dict):
+        statements = [statements]
+
+    for stmt in statements:
+        if stmt.get("Effect") != "Allow":
+            continue
+        actions = _normalize_list(stmt.get("Action", []))
+        if not any(
+            a.lower() in ("sts:assumerole", "sts:*", "*") for a in actions
+        ):
+            continue
+        principal = stmt.get("Principal")
+        if principal == "*":
+            principals.add("*")
+            continue
+        if isinstance(principal, dict):
+            for key in ("AWS", "Service", "Federated"):
+                entry = principal.get(key)
+                if isinstance(entry, str):
+                    principals.add(entry)
+                elif isinstance(entry, list):
+                    principals.update(p for p in entry if isinstance(p, str))
+        elif isinstance(principal, str):
+            principals.add(principal)
+
+    return principals
+
+
+def _trust_permits_role(
+    principals: set[str] | None,
+    source_role_name: str,
+    account_id: str | None,
+) -> bool:
+    """Whether a role in this account may assume a target with these trust principals.
+
+    Accepts an exact role ARN, an account root principal (which delegates the decision to
+    the source's own identity policy, and the source does hold sts:AssumeRole), or a
+    wildcard. A service principal such as cloudformation.amazonaws.com does not permit a
+    role to assume the target, which is what prevents CDK deployment roles from appearing
+    reachable from arbitrary Lambda execution roles.
+
+    Unknown trust policies (None) are treated as permitted, so that a missing iam:GetRole
+    permission degrades to the previous over-approximating behaviour rather than silently
+    removing real paths.
+    """
+    if principals is None:
+        return True
+    if "*" in principals:
+        return True
+    if account_id:
+        if f"arn:aws:iam::{account_id}:root" in principals:
+            return True
+        if f"arn:aws:iam::{account_id}:role/{source_role_name}" in principals:
+            return True
+    # Any exact role-ARN principal naming this role, regardless of partition or path
+    for p in principals:
+        if p.startswith("arn:") and ":role/" in p:
+            if p.split(":role/", 1)[1].split("/")[-1] == source_role_name:
+                return True
+    return False
 
 
 def _get_role_policy_statements(iam_client: Any, role_name: str) -> list[dict[str, Any]]:

@@ -96,14 +96,40 @@ def format_text_report(
 
     # Edge impact analysis
     if scoring.edge_impacts:
+        # Identity edges are the TM1 premise, not controls: no control can stop in-process
+        # code from reading the credentials in its own execution environment. Reporting them
+        # as "controls that reduce blast radius" made the threat model itself look like the
+        # single most effective mitigation available.
+        premise = [e for e in scoring.edge_impacts if e.edge_type == "identity"]
+        controls = [e for e in scoring.edge_impacts if e.edge_type != "identity"]
+
+        if premise:
+            lines.append("-" * 70)
+            lines.append("  THREAT MODEL PREMISE (not a control)")
+            lines.append("-" * 70)
+            for ei in premise:
+                lines.append(f"    {_fmt(ei.source, graph)} -> {_fmt(ei.target, graph)}")
+                lines.append(f"           {ei.label}")
+                lines.append(
+                    f"           Accounts for {ei.impact_delta:.1f}% of the blast radius"
+                )
+            lines.append("")
+            lines.append("  This path is assumed by the threat model rather than mitigable.")
+            lines.append("  Reduce the role's permissions to shrink what it leads to.")
+            lines.append("")
+
+        high_impacts = [e for e in controls if e.category == "high"]
+        med_impacts = [e for e in controls if e.category == "medium"]
+        low_impacts = [e for e in controls if e.category == "low"]
+
         lines.append("-" * 70)
         lines.append("  EDGE IMPACT ANALYSIS (controls that reduce blast radius)")
         lines.append("-" * 70)
         lines.append("")
 
-        high_impacts = [e for e in scoring.edge_impacts if e.category == "high"]
-        med_impacts = [e for e in scoring.edge_impacts if e.category == "medium"]
-        low_impacts = [e for e in scoring.edge_impacts if e.category == "low"]
+        if not controls:
+            lines.append("  No mitigable edges contribute to the blast radius.")
+            lines.append("")
 
         if high_impacts:
             lines.append("  HIGH IMPACT (removing reduces BR by >20%):")
