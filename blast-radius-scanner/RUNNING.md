@@ -58,6 +58,7 @@ blast-radius-scanner --region eu-central-1 --auto-entry-point -v
 | `--exposed-only` | Only consider entry points an untrusted caller can reach without AWS credentials |
 | `--include-stopped` | Also consider EC2 instances that are not running |
 | `--profile <name>` | AWS profile to use |
+| `--account-name <label>` | Label for the account in the report, e.g. `"WordPress prod"`. Use this — the accounts have no IAM alias, so reports otherwise show only the ID |
 | `--output text\|json` | Output format |
 | `-v` | Verbose logging. Recommended, since IAM role resolution can take a while with no other visible progress |
 
@@ -246,6 +247,9 @@ The scanner is read-only. Every AWS call it makes is a `Describe*`, `Get*` or `L
 - **DynamoDB** `list_tables`, `describe_table`
 - **IAM** `list_roles`, `list_role_policies`, `get_role_policy`, `list_attached_role_policies`, `get_policy`, `get_policy_version`, `get_instance_profile`, `list_account_aliases`
 - **ELBv2** `describe_load_balancers`, `describe_target_groups`, `describe_target_health`
+- **Secrets Manager** `list_secrets` (metadata only; secret values are never read)
+- **SSM** `describe_parameters` (metadata only; parameter values are never read)
+- **Organizations** `describe_account` (fails on member accounts, which is expected)
 - **STS** `get_caller_identity`
 
 Two qualifications: the scanner writes report files to local disk, and the reads are recorded in CloudTrail. Read volume has grown noticeably — role chaining resolves policies transitively, and exposure detection makes up to three calls per Lambda function, so an account with 81 functions adds roughly 240 read calls on top. Worth knowing before scanning production if anyone monitors API rates.

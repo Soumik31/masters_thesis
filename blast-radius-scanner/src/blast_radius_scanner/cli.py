@@ -30,6 +30,8 @@ from blast_radius_scanner.reachability import (
 from blast_radius_scanner.report import format_json_report, format_text_report
 from blast_radius_scanner.scorer import ScoringResult, score_blast_radius
 
+logger = logging.getLogger(__name__)
+
 # Maps the CLI flag spelling to the internal threat model key.
 _TM_FLAG_TO_KEY = {"code-exec": TM_CODE_EXEC, "ssrf": TM_SSRF}
 
@@ -43,6 +45,7 @@ _TM_FLAG_TO_KEY = {"code-exec": TM_CODE_EXEC, "ssrf": TM_SSRF}
 @click.option("--include-stopped", is_flag=True, default=False, help="Include EC2 instances that are not running as entry point candidates")
 @click.option("--exposed-only", is_flag=True, default=False, help="Only consider entry points an untrusted caller can reach without AWS credentials (public IP, public Function URL, or wildcard invoke policy)")
 @click.option("--profile", default=None, help="AWS CLI profile name to use")
+@click.option("--account-name", default=None, help="Label for this account in the report, e.g. \"WordPress prod\". Overrides the IAM alias and Organizations name.")
 @click.option("--output", "output_format", type=click.Choice(["text", "json"]), default="text", help="Output format")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose logging")
 def main(
@@ -54,6 +57,7 @@ def main(
     include_stopped: bool,
     exposed_only: bool,
     profile: str | None,
+    account_name: str | None,
     output_format: str,
     verbose: bool,
 ) -> None:
@@ -80,7 +84,7 @@ def main(
         session_kwargs["profile_name"] = profile
     session = boto3.Session(**session_kwargs)
 
-    account_name, account_id = _get_account_identity(session)
+    account_name, account_id = _get_account_identity(session, account_name)
     click.echo(f"  Account:  {account_name} ({account_id})", err=True)
     click.echo(f"  Threat model (primary): {THREAT_MODEL_LABELS[primary_tm]}", err=True)
     click.echo("", err=True)
@@ -185,17 +189,49 @@ def main(
     )
 
 
-def _get_account_identity(session: boto3.Session) -> tuple[str, str]:
-    """Return (account_name, account_id). Falls back to the ID when no alias is set."""
+def _get_account_identity(
+    session: boto3.Session, override: str | None = None
+) -> tuple[str, str]:
+    """Return (account_name, account_id).
+
+    Resolution order:
+      1. --account-name, when given. Nothing in AWS returns a label like "WordPress prod",
+         so an explicit name is the only way to get readable identifiers into a report.
+      2. The IAM account alias, if one is set.
+      3. The Organizations account name. Only works from the management account or a
+         delegated administrator; member accounts are denied and fall through.
+      4. The account ID.
+    """
     sts = session.client("sts")
     account_id = sts.get_caller_identity()["Account"]
+
+    if override:
+        return override, account_id
+
     try:
-        iam = session.client("iam")
-        aliases = iam.list_account_aliases().get("AccountAliases", [])
-        account_name = aliases[0] if aliases else account_id
-    except Exception:
-        account_name = account_id
-    return account_name, account_id
+        aliases = session.client("iam").list_account_aliases().get("AccountAliases", [])
+        if aliases:
+            return aliases[0], account_id
+    except Exception as e:
+        logger.debug("Could not list account aliases: %s", e)
+
+    try:
+        account = session.client("organizations").describe_account(AccountId=account_id)
+        name = account.get("Account", {}).get("Name")
+        if name:
+            return name, account_id
+    except Exception as e:
+        logger.debug(
+            "Could not describe account via Organizations (expected from a member "
+            "account): %s",
+            e,
+        )
+
+    logger.info(
+        "No account alias or Organizations name available; using the account ID. "
+        "Pass --account-name to label this account in the report."
+    )
+    return account_id, account_id
 
 
 def _write_no_exposure_result(
