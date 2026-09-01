@@ -167,6 +167,8 @@ class DiscoveryResult:
     route_tables: list[RouteTable] = field(default_factory=list)
     security_groups: dict[str, SecurityGroup] = field(default_factory=dict)
     iam_roles: list[str] = field(default_factory=list)
+    secrets: list[str] = field(default_factory=list)
+    ssm_parameters: list[str] = field(default_factory=list)
 
     @property
     def total_resources(self) -> int:
@@ -181,4 +183,6 @@ class DiscoveryResult:
             + len(self.nat_gateways)
             + len(self.internet_gateways)
             + len(self.route_tables)
+            + len(self.secrets)
+            + len(self.ssm_parameters)
         )

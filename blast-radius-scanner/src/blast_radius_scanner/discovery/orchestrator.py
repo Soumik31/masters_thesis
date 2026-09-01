@@ -18,6 +18,7 @@ from blast_radius_scanner.discovery.iam_roles import discover_iam_roles
 from blast_radius_scanner.discovery.lambda_fn import discover_lambda_functions
 from blast_radius_scanner.discovery.rds import discover_rds_instances
 from blast_radius_scanner.discovery.s3 import discover_s3_buckets
+from blast_radius_scanner.discovery.secrets import discover_secrets, discover_ssm_parameters
 from blast_radius_scanner.discovery.vpc import (
     discover_internet_gateways,
     discover_nat_gateways,
@@ -76,6 +77,8 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
     internet_gateways = discover_internet_gateways(session)
     route_tables = discover_route_tables(session)
     iam_roles = discover_iam_roles(session)
+    secrets = discover_secrets(session)
+    ssm_parameters = discover_ssm_parameters(session)
 
     result = DiscoveryResult(
         ec2_instances=ec2_instances,
@@ -89,6 +92,8 @@ def discover_all(session: boto3.Session, region: str) -> DiscoveryResult:
         route_tables=route_tables,
         security_groups=security_groups,
         iam_roles=iam_roles,
+        secrets=secrets,
+        ssm_parameters=ssm_parameters,
     )
 
     logger.info(

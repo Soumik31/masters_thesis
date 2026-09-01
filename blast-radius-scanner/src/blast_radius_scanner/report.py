@@ -260,6 +260,12 @@ def _group_reachable_by_type(resource_ids: list[str], graph: nx.DiGraph) -> dict
             resource_type = "dynamodb"
         elif res_id.startswith("iam_role:"):
             resource_type = "iam_role"
+        elif res_id.startswith("secret:"):
+            resource_type = "secret"
+        elif res_id.startswith("ssm:"):
+            resource_type = "ssm_parameter"
+        elif res_id.startswith("logs:"):
+            resource_type = "logs"
         else:
             resource_type = "unknown"
         grouped.setdefault(resource_type, []).append(res_id)
@@ -280,6 +286,22 @@ def _generate_recommendations(scoring: ScoringResult, graph: nx.DiGraph) -> list
         recommendations.append(
             "Execution-role credentials are obtainable whenever code runs on the resource; "
             "IMDSv2 does not sever this path. Reduce the role's permissions instead (least privilege)."
+        )
+
+    reachable_types = {
+        graph.nodes[r].get("resource_type") for r in scoring.reachable_resource_ids if r in graph
+    }
+    if "secret" in reachable_types or "ssm_parameter" in reachable_types:
+        recommendations.append(
+            "Credential stores are reachable (Secrets Manager or SSM Parameter Store). "
+            "Reading one yields credentials to systems that may not otherwise be reachable. "
+            "Scope GetSecretValue and GetParameter to the specific ARNs each role needs."
+        )
+    if "logs" in reachable_types:
+        recommendations.append(
+            "CloudWatch Logs are readable account-wide. Log content often includes request "
+            "payloads and accidentally logged tokens. Scope logs read actions to the log "
+            "groups each role needs."
         )
 
     iam_high = [ei for ei in scoring.edge_impacts if ei.edge_type == "iam" and ei.category in ("high", "medium")]
@@ -334,6 +356,12 @@ def _build_results_table(scoring: ScoringResult, graph: nx.DiGraph) -> str:
             rtype = "dynamodb"
         elif res_id.startswith("iam_role:"):
             rtype = "iam_role"
+        elif res_id.startswith("secret:"):
+            rtype = "secret"
+        elif res_id.startswith("ssm:"):
+            rtype = "ssm_parameter"
+        elif res_id.startswith("logs:"):
+            rtype = "logs"
         else:
             rtype = "unknown"
         reachable_by_type[rtype] = reachable_by_type.get(rtype, 0) + 1
@@ -346,6 +374,9 @@ def _build_results_table(scoring: ScoringResult, graph: nx.DiGraph) -> str:
         "rds": "RDS",
         "dynamodb": "DynamoDB",
         "iam_role": "IAM Roles",
+        "secret": "Secrets",
+        "ssm_parameter": "SSM Parameters",
+        "logs": "CloudWatch Logs",
         "internet_gateway": "Internet GWs",
         "nat_gateway": "NAT Gateways",
         "vpc_endpoint": "VPC Endpoints",

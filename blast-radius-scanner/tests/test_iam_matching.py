@@ -65,12 +65,17 @@ def _discovery() -> DiscoveryResult:
 # --- unrecognised actions must not imply full access ---------------------------------
 
 
-def test_cloudwatch_logs_actions_produce_no_edges():
-    """The defect that inflated every account: log permissions are not full access."""
+def test_cloudwatch_log_writes_produce_no_edges():
+    """The defect that inflated every account: log *writes* are not full access.
+
+    Note this originally also asserted logs:FilterLogEvents produced no edges, which was
+    wrong. Reading log content is data access — log groups routinely hold request payloads
+    and accidentally logged tokens — and it is now modelled. See test_credential_stores.
+    """
     for action in (
         "logs:PutLogEvents",
-        "logs:FilterLogEvents",
         "logs:CreateLogStream",
+        "logs:CreateLogGroup",
         "logs:DescribeLogStreams",
     ):
         assert _match_actions([action]) == [], f"{action} should not match"

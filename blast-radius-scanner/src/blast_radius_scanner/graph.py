@@ -64,6 +64,12 @@ def _add_resource_nodes(G: nx.DiGraph, discovery: DiscoveryResult) -> None:
         G.add_node(fn.function_arn, resource_type="lambda", resource_id=fn.function_name,
                    label=fn.function_name, vpc_id=fn.vpc_id or "")
 
+    for name in discovery.secrets:
+        G.add_node(f"secret:{name}", resource_type="secret", resource_id=name, label=name)
+
+    for name in discovery.ssm_parameters:
+        G.add_node(f"ssm:{name}", resource_type="ssm_parameter", resource_id=name, label=name)
+
     for ep in discovery.vpc_endpoints:
         G.add_node(ep.endpoint_id, resource_type="vpc_endpoint", resource_id=ep.endpoint_id,
                    label=f"{ep.endpoint_type}:{ep.service_name}")

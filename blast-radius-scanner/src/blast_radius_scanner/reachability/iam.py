@@ -38,9 +38,36 @@ INTERESTING_ACTIONS: dict[str, str] = {
     "rds:*": "rds_full",
     # STS (assume role = lateral movement)
     "sts:AssumeRole": "assume_role",
+    # Secrets Manager — reading a secret typically yields credentials to another system,
+    # so it extends blast radius even though it is a read-only action.
+    "secretsmanager:GetSecretValue": "secret_read",
+    "secretsmanager:DescribeSecret": "secret_read",
+    "secretsmanager:ListSecretVersionIds": "secret_read",
+    "secretsmanager:*": "secret_full",
+    # SSM Parameter Store — same reasoning; SecureString parameters hold credentials.
+    "ssm:GetParameter": "parameter_read",
+    "ssm:GetParameters": "parameter_read",
+    "ssm:GetParametersByPath": "parameter_read",
+    "ssm:*": "parameter_full",
+    # KMS — decryption capability, which unlocks data the attacker can otherwise only
+    # retrieve in ciphertext.
+    "kms:Decrypt": "kms_decrypt",
+    "kms:*": "kms_decrypt",
+    # CloudWatch Logs — reading log content is data access. Log groups routinely contain
+    # request payloads, accidentally logged tokens and connection strings in stack traces.
+    # Writing log lines (logs:PutLogEvents) is excluded: it yields no data to an attacker.
+    "logs:FilterLogEvents": "logs_read",
+    "logs:GetLogEvents": "logs_read",
+    "logs:StartQuery": "logs_read",
     # Catch-all
     "*": "full_access",
 }
+
+# Synthetic node representing all CloudWatch Logs data in the account. Log groups are not
+# discovered individually: an account can hold hundreds, and adding a node each would
+# dominate the blast radius denominator without adding analytical value. One aggregate node
+# captures the capability while keeping scores comparable across scans.
+LOGS_NODE = "logs:CloudWatchLogs"
 
 
 def discover_iam_edges(
@@ -473,6 +500,18 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
         targets.extend(fn.function_arn for fn in discovery.lambda_functions)
     elif category.startswith("rds"):
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
+    elif category.startswith("secret"):
+        targets.extend(f"secret:{name}" for name in discovery.secrets)
+    elif category.startswith("parameter"):
+        targets.extend(f"ssm:{name}" for name in discovery.ssm_parameters)
+    elif category == "logs_read":
+        targets.append(LOGS_NODE)
+    elif category == "kms_decrypt":
+        # Decryption on its own reaches no resource; it unlocks ciphertext the attacker must
+        # already be able to retrieve. Modelled as an enabler of the secret and parameter
+        # paths rather than as a target of its own.
+        targets.extend(f"secret:{name}" for name in discovery.secrets)
+        targets.extend(f"ssm:{name}" for name in discovery.ssm_parameters)
     elif category == "assume_role":
         # Role chaining: sts:AssumeRole on "*" can reach any assumable role in the account
         targets.extend(f"iam_role:{name}" for name in _assumable_role_names(discovery))
@@ -483,6 +522,9 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
         targets.extend(fn.function_arn for fn in discovery.lambda_functions)
         targets.extend(rds.db_instance_id for rds in discovery.rds_instances)
         targets.extend(inst.instance_id for inst in discovery.ec2_instances)
+        targets.extend(f"secret:{name}" for name in discovery.secrets)
+        targets.extend(f"ssm:{name}" for name in discovery.ssm_parameters)
+        targets.append(LOGS_NODE)
         targets.extend(f"iam_role:{name}" for name in _assumable_role_names(discovery))
 
     return targets
@@ -563,6 +605,27 @@ def _arn_to_target_id(
         if not role_name or "*" in role_name or "?" in role_name:
             return None
         return f"iam_role:{role_name}"
+
+    # Secrets Manager: arn:aws:secretsmanager:region:account:secret:name-SUFFIX
+    if ":secretsmanager:" in resource_arn and ":secret:" in resource_arn:
+        fragment = resource_arn.split(":secret:")[-1]
+        for name in discovery.secrets:
+            # AWS appends a random 6-character suffix to the ARN, so match on prefix
+            if fragment == name or fragment.startswith(name):
+                return f"secret:{name}"
+        return None
+
+    # SSM parameter: arn:aws:ssm:region:account:parameter/name
+    if ":ssm:" in resource_arn and ":parameter" in resource_arn:
+        fragment = resource_arn.split(":parameter", 1)[-1].lstrip("/")
+        for name in discovery.ssm_parameters:
+            if name.lstrip("/") == fragment:
+                return f"ssm:{name}"
+        return None
+
+    # CloudWatch Logs: any log group resolves to the aggregate logs node
+    if ":logs:" in resource_arn:
+        return LOGS_NODE
 
     # EC2 instance (rare in policies, but possible)
     if ":instance/" in resource_arn:
