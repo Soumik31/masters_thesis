@@ -189,18 +189,50 @@ def main(
     )
 
 
+# Account metadata parameters written by AWS Account Factory for Terraform. These are read
+# by exact name only. Unlike the bulk secret and parameter discovery, which deliberately
+# reads metadata and never values, these specific paths hold non-secret account labels
+# (an application name and environment), so reading their values is safe and is the only
+# way to name a member account automatically. No other parameter value is ever read.
+_AFT_NAME_PARAMETERS = (
+    "/aft/account-request/custom-fields/appName",
+    "/aft/account-request/custom-fields/appEnv",
+)
+
+
+def _aft_account_name(session: boto3.Session) -> str | None:
+    """Build an account label from AFT metadata parameters, e.g. "wordpress-prod"."""
+    try:
+        client = session.client("ssm")
+        parts: list[str] = []
+        for name in _AFT_NAME_PARAMETERS:
+            try:
+                value = client.get_parameter(Name=name)["Parameter"]["Value"]
+            except Exception:
+                continue
+            value = (value or "").strip()
+            if value:
+                parts.append(value)
+        if parts:
+            return "-".join(parts)
+    except Exception as e:
+        logger.debug("Could not read AFT account metadata: %s", e)
+    return None
+
+
 def _get_account_identity(
     session: boto3.Session, override: str | None = None
 ) -> tuple[str, str]:
     """Return (account_name, account_id).
 
-    Resolution order:
-      1. --account-name, when given. Nothing in AWS returns a label like "WordPress prod",
-         so an explicit name is the only way to get readable identifiers into a report.
-      2. The IAM account alias, if one is set.
+    Resolution order, each falling through to the next:
+      1. --account-name, when given.
+      2. The IAM account alias.
       3. The Organizations account name. Only works from the management account or a
-         delegated administrator; member accounts are denied and fall through.
-      4. The account ID.
+         delegated administrator; member accounts are denied.
+      4. AFT account metadata parameters, which is what actually resolves for Control
+         Tower member accounts where no alias is set.
+      5. The account ID.
     """
     sts = session.client("sts")
     account_id = sts.get_caller_identity()["Account"]
@@ -227,9 +259,13 @@ def _get_account_identity(
             e,
         )
 
+    aft_name = _aft_account_name(session)
+    if aft_name:
+        return aft_name, account_id
+
     logger.info(
-        "No account alias or Organizations name available; using the account ID. "
-        "Pass --account-name to label this account in the report."
+        "No account alias, Organizations name or AFT metadata available; using the account "
+        "ID. Pass --account-name to label this account explicitly."
     )
     return account_id, account_id
 
