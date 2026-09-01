@@ -47,11 +47,12 @@ INTERESTING_ACTIONS: dict[str, str] = {
     "rds:*": "rds_full",
     # STS (assume role = lateral movement)
     "sts:AssumeRole": "assume_role",
-    # Secrets Manager — reading a secret typically yields credentials to another system,
-    # so it extends blast radius even though it is a read-only action.
+    # Secrets Manager — only GetSecretValue reveals the secret material. DescribeSecret and
+    # ListSecretVersionIds return metadata (name, ARN, rotation config, version IDs) and are
+    # reconnaissance rather than data access, so they are deliberately not modelled.
     "secretsmanager:GetSecretValue": "secret_read",
-    "secretsmanager:DescribeSecret": "secret_read",
-    "secretsmanager:ListSecretVersionIds": "secret_read",
+    "secretsmanager:BatchGetSecretValue": "secret_read",
+    "secretsmanager:PutSecretValue": "secret_read",
     "secretsmanager:*": "secret_full",
     # SSM Parameter Store — same reasoning; SecureString parameters hold credentials.
     "ssm:GetParameter": "parameter_read",
@@ -60,8 +61,13 @@ INTERESTING_ACTIONS: dict[str, str] = {
     "ssm:GetParameterHistory": "parameter_read",
     "ssm:PutParameter": "parameter_read",
     "ssm:*": "parameter_full",
-    # KMS — decryption capability, which unlocks data the attacker can otherwise only
-    # retrieve in ciphertext.
+    # KMS — decryption capability. Deliberately NOT resolved to any target: kms:Decrypt on
+    # its own reaches nothing, because the attacker must already be able to retrieve the
+    # ciphertext. It only matters in conjunction with a retrieval permission such as
+    # secretsmanager:GetSecretValue, and the model has no way to express that conjunction.
+    # Treating it as reaching every secret and parameter contributed 154 spurious edges to
+    # the article-generation-prod scan. Left in the map so the action is recognised and
+    # recorded rather than silently unmatched.
     "kms:Decrypt": "kms_decrypt",
     "kms:*": "kms_decrypt",
     # CloudWatch Logs — reading log content is data access. Log groups routinely contain
@@ -532,11 +538,11 @@ def _get_wildcard_targets(category: str, discovery: DiscoveryResult) -> list[str
     elif category == "logs_read":
         targets.append(LOGS_NODE)
     elif category == "kms_decrypt":
-        # Decryption on its own reaches no resource; it unlocks ciphertext the attacker must
-        # already be able to retrieve. Modelled as an enabler of the secret and parameter
-        # paths rather than as a target of its own.
-        targets.extend(f"secret:{name}" for name in discovery.secrets)
-        targets.extend(f"ssm:{name}" for name in discovery.ssm_parameters)
+        # No targets by design. Decryption reaches nothing on its own: the attacker must
+        # already hold the ciphertext, which requires a separate retrieval permission. The
+        # model cannot express that conjunction, so the conservative choice is to emit no
+        # edge rather than imply access to every encrypted resource.
+        return []
     elif category == "assume_role":
         # Role chaining: sts:AssumeRole on "*" can reach any assumable role in the account
         targets.extend(f"iam_role:{name}" for name in _assumable_role_names(discovery))

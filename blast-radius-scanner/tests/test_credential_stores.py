@@ -45,13 +45,22 @@ def _discovery() -> DiscoveryResult:
 # --- actions are recognised -----------------------------------------------------------
 
 
-def test_secret_read_actions_are_modelled():
+def test_secret_value_actions_are_modelled():
+    """Only actions revealing secret material count.
+
+    This originally also asserted secretsmanager:DescribeSecret was modelled, which was too
+    generous: Describe returns name, ARN and rotation config, not the value. Narrowed after
+    it contributed spurious edges to the article-generation scans.
+    """
     for action in (
         "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret",
+        "secretsmanager:BatchGetSecretValue",
         "secretsmanager:*",
     ):
         assert _match_actions([action]), f"{action} should be modelled"
+
+    for action in ("secretsmanager:DescribeSecret", "secretsmanager:ListSecretVersionIds"):
+        assert _match_actions([action]) == [], f"{action} is metadata, not value access"
 
 
 def test_parameter_read_actions_are_modelled():

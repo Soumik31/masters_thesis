@@ -121,3 +121,55 @@ def test_dynamodb_batch_and_update_actions_are_modelled():
     assert _match_actions(["dynamodb:BatchWriteItem"])[0][1] == "dynamodb_write"
     assert _match_actions(["dynamodb:BatchGetItem"])[0][1] == "dynamodb_read"
     assert _match_actions(["dynamodb:UpdateItem"])[0][1] == "dynamodb_write"
+
+
+# --- kms:Decrypt reaches nothing on its own -------------------------------------------
+
+
+def test_kms_decrypt_produces_no_edges():
+    """154 spurious edges in article-generation-prod came from treating decryption as
+    access to every secret and parameter. Decrypting requires already holding the
+    ciphertext, which needs a separate retrieval permission."""
+    stmt = [{"Effect": "Allow", "Action": "kms:Decrypt", "Resource": "*"}]
+    assert _match_statements_to_resources("r", stmt, _discovery()) == []
+
+
+def test_kms_action_is_still_recognised():
+    """Recognised so it is recorded rather than silently unmatched, but yields no target."""
+    assert _match_actions(["kms:Decrypt"]) == [("kms:Decrypt", "kms_decrypt")]
+
+
+# --- only value-revealing secret actions count ----------------------------------------
+
+
+def test_secret_metadata_actions_do_not_grant_value_access():
+    """DescribeSecret and ListSecretVersionIds return metadata, not secret material."""
+    for action in (
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds",
+        "secretsmanager:ListSecrets",
+        "secretsmanager:List*",
+    ):
+        assert _match_actions([action]) == [], f"{action} should not match"
+
+
+def test_get_secret_value_still_grants_access():
+    d = _discovery()
+    stmt = [{"Effect": "Allow", "Action": "secretsmanager:GetSecretValue", "Resource": "*"}]
+    edges = _match_statements_to_resources("r", stmt, d)
+    assert len(edges) == len(d.secrets)
+
+
+def test_secretsmanager_service_wildcard_still_grants_access():
+    d = _discovery()
+    stmt = [{"Effect": "Allow", "Action": "secretsmanager:*", "Resource": "*"}]
+    edges = _match_statements_to_resources("r", stmt, d)
+    assert len(edges) == len(d.secrets)
+
+
+def test_ssm_get_prefix_still_reaches_parameters():
+    """ssm:Get* was 144 real edges in the scan and must be preserved."""
+    d = _discovery()
+    stmt = [{"Effect": "Allow", "Action": "ssm:Get*", "Resource": "*"}]
+    edges = _match_statements_to_resources("r", stmt, d)
+    assert len(edges) == len(d.ssm_parameters)
