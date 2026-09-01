@@ -17,13 +17,22 @@ logger = logging.getLogger(__name__)
 INTERESTING_ACTIONS: dict[str, str] = {
     # S3
     "s3:GetObject": "s3_read",
+    "s3:GetObjectVersion": "s3_read",
+    "s3:GetObjectAcl": "s3_read",
     "s3:PutObject": "s3_write",
+    "s3:PutObjectAcl": "s3_write",
     "s3:DeleteObject": "s3_write",
+    "s3:DeleteObjectVersion": "s3_write",
     "s3:ListBucket": "s3_read",
+    "s3:ListBucketVersions": "s3_read",
+    "s3:GetBucketPolicy": "s3_read",
     "s3:*": "s3_full",
     # DynamoDB
     "dynamodb:GetItem": "dynamodb_read",
+    "dynamodb:BatchGetItem": "dynamodb_read",
     "dynamodb:PutItem": "dynamodb_write",
+    "dynamodb:UpdateItem": "dynamodb_write",
+    "dynamodb:BatchWriteItem": "dynamodb_write",
     "dynamodb:DeleteItem": "dynamodb_write",
     "dynamodb:Scan": "dynamodb_read",
     "dynamodb:Query": "dynamodb_read",
@@ -48,6 +57,8 @@ INTERESTING_ACTIONS: dict[str, str] = {
     "ssm:GetParameter": "parameter_read",
     "ssm:GetParameters": "parameter_read",
     "ssm:GetParametersByPath": "parameter_read",
+    "ssm:GetParameterHistory": "parameter_read",
+    "ssm:PutParameter": "parameter_read",
     "ssm:*": "parameter_full",
     # KMS — decryption capability, which unlocks data the attacker can otherwise only
     # retrieve in ciphertext.
@@ -431,21 +442,35 @@ def _categorise_action(action_lower: str) -> str | None:
 
 
 def _action_matches(action: str, pattern: str) -> bool:
-    """Check if an action matches a pattern (supporting * wildcards)."""
+    """Check if an action matches a pattern (supporting * wildcards).
+
+    Ordering matters. When the policy action itself carries a trailing wildcard, only
+    patterns falling *under* that action's prefix may match. Testing the pattern's own
+    wildcard as well would let ``ssm:List*`` match the pattern ``ssm:*`` — because
+    ``ssm:List*`` does start with ``ssm:`` — and be scored as full parameter access. That
+    inflated results badly: ``ssm:List*``, ``lambda:List*`` and ``kms:GenerateDataKey*``
+    each collapsed to full service access despite granting none of it. Listing documents
+    does not read parameter values, listing functions does not invoke them, and generating
+    a data key does not decrypt anything.
+
+    ``ssm:Get*`` still correctly matches ``ssm:GetParameter``, since that pattern does fall
+    under the ``ssm:Get`` prefix.
+    """
     if pattern == "*":
         # Only a literal all-actions grant matches. See _match_actions.
         return action == "*"
     if action == pattern:
         return True
-    # Handle wildcards like "s3:*"
-    if pattern.endswith("*"):
-        prefix = pattern[:-1]
-        if action.startswith(prefix):
-            return True
     if action.endswith("*"):
-        prefix = action[:-1]
-        if pattern.startswith(prefix):
-            return True
+        return pattern.startswith(action[:-1])
+    if pattern.endswith("*"):
+        # A service-wide pattern such as "ssm:*" describes a grant of the entire service. It
+        # must not act as a catch-all for every individual action in that service:
+        # ssm:ListDocuments is not parameter access, lambda:ListFunctions is not invocation,
+        # and kms:GenerateDataKey is not decryption. Only an action that is itself at least
+        # this broad matches; specific actions are caught by the exact-match pass, which is
+        # why they have to be enumerated in INTERESTING_ACTIONS to count.
+        return action == pattern or action == "*"
     return False
 
 
